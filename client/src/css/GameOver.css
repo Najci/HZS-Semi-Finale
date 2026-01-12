@@ -1,0 +1,35 @@
+#GameoverWrapper{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 5%
+}
+
+#gameOverTitile{
+    font-size: 5vw;
+}
+
+#GameScore{
+    font-size: xx-large;
+}
+
+#RetartButton{
+    height: 10%;
+    width: 30%;
+    background-color: rgb(44, 52, 156);
+    border: none;
+    border-radius: 2vw;
+    filter: drop-shadow(10px 0px 5px rgba(0, 0, 0, 0.452));
+    font-size: xx-large;
+    text-wrap:balance;
+    transition: 0.3s;
+    padding: 15px;
+}
+
+#RetartButton:hover{
+    transition: 0.3s;
+    filter: drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.452));
+}

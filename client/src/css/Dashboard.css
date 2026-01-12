@@ -1,0 +1,90 @@
+.nav-Link{
+    text-decoration: none;
+    font-size: xx-large;
+    font-weight: 650;
+}
+
+#Logout{
+    width: 15%;
+    height: 5%;
+    position: absolute;
+    right: 1%;
+    top: 2%;
+    font-weight: 600;
+    font-size: 120%;
+    text-align: center;
+    background-color: #012f8a;
+    border-radius: 25px;
+    padding: 10px;
+    border: none;
+}
+
+#sideWrapper{
+    float: left;
+    width: 100%;
+    height: 100%;
+    /*     border-top-right-radius: 4%;
+    border-bottom-right-radius: 4%; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sideWrapperButton{
+    background-image: linear-gradient(#2151b1, #000e2b);
+    border: none;
+    height: 10%;
+    border-radius: 3vw;
+}
+
+#sidebarButtonWrapper{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 40%;
+    justify-content: center;
+    align-items: center;
+    gap: 1%;
+    margin: 1% 0;
+}
+
+#instructions{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: unset;
+    border: none;
+    height: 5%;
+    border-radius: 3vw;
+    position: absolute;
+    right: 33%;
+}
+
+#WB{
+    margin-top: 2%;
+    font-weight: 100;
+    font-size: 3vw;
+}
+
+#Game{
+    height: 100%;
+    font-size: x-large;
+    width: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#HighScore{
+    margin: 2%;
+    width: calc(6vh + 70%);
+    text-align: center;
+}
+
+#gameWrap{
+    width: 100%;
+    height: 8%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
