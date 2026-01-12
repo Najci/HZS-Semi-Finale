@@ -4,7 +4,7 @@ import Main from './components/Main';
 import SignUp from './components/SignUp';
 import Footer from './components/Footer';
 import Login from './components/Login';
-import { CookiesProvider, useCookies } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import Game from './components/Game';
 import Dashboard from './components/Dashboard';
@@ -78,9 +78,9 @@ function App() {
   );
 
   return (
-    <CookiesProvider>
+
       <RouterProvider router={router} />
-    </CookiesProvider>
+
   );
 }
 
