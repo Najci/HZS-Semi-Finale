@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate} from 'react-router-dom';
 /* import '../css/Game.css' */
 import axios from 'axios';
-import {Foods, FoodClass} from './Builder/Food';
+import { buildFoodClass } from './FoodComponents/Food';
 
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -11,48 +11,56 @@ import 'react-loading-skeleton/dist/skeleton.css';
 const Fridge = ({ user }) => {
 
   const [search, Searching] = useState("")
-  const [filteredFoods, setFilteredFoods] = useState([...Foods.values()])
   const [storedFoods, setStoredFoods] = useState([])
-  const [selectedFood, selectFood] = useState(Foods)
   const [cartCount, addCartCount] = useState(0)
+  const [loadedFoods, loadFoods] = useState([])
+  const [selectedFood, selectFood] = useState(loadedFoods)
+  const [filteredFoods, setFilteredFoods] = useState([...loadedFoods.values()])
 
   useEffect(() => {
+    getFoods()
     getInventory()
   },[])
 
   useEffect(() => {
     if(search.length == 0){
-      setFilteredFoods([...Foods.values()])
+      setFilteredFoods([...loadedFoods.values()])
     }
 
     const lower = search.toLowerCase()
 
-    const filtered = [...Foods.values()].filter(food =>
+    const filtered = [...loadedFoods.values()].filter(food =>
       food.Name.toLowerCase().startsWith(lower)
     )
   
     setFilteredFoods(filtered)
-  },[search])
- 
-  const getInventory = () => {
-    axios.get(`http://localhost:3000/api/getinventory/${user?._id}`)
-    .then((res) => {
-      console.log(res.data)
+  },[search, loadedFoods])
 
+  const getFoods = async () => {
+    await axios.get(`http://localhost:3000/api/getstore`)
+    .then((res) => {
+
+      const Foods = new Map()
+
+      res.data.forEach(item => {
+        const foodItem = buildFoodClass(item)
+
+        Foods.set(item.Name, foodItem)
+        loadFoods(Foods)
+      })
+    })
+    .catch((error) => {
+        console.log(error)
+    })
+  }
+ 
+  const getInventory = async () => {
+    await axios.get(`http://localhost:3000/api/getinventory/${user?._id}`)
+    .then((res) => {
       setStoredFoods([])
 
       res.data?.forEach(item => {
-        const foodItem = new FoodClass(
-          item._id,
-          item.Name,
-          item.Img,
-          item.Cal,
-          item.Pro,
-          item.Fat,
-          item.Sug,
-          item.Carbs
-        )
-
+        const foodItem = buildFoodClass(item)
         foodItem.Count = `${item.count}x`
 
         setStoredFoods(prev => [...prev, foodItem])
@@ -64,8 +72,8 @@ const Fridge = ({ user }) => {
     });
   }
 
-  const handleSubmit = () => {
-    axios.post(`http://localhost:3000/api/updateinventory`, {user : user, food : selectedFood, count : cartCount})
+  const handleSubmit = async () => {
+    await axios.post(`http://localhost:3000/api/updateinventory`, {user : user, food : selectedFood, count : cartCount})
     .then(function(response) {
       getInventory()
     })
@@ -85,7 +93,7 @@ const Fridge = ({ user }) => {
           <input onChange={(e) => Searching(e.target.value)} className='bg-white w-full h-10 mt-5 text-center text-2xl' type="text" name="" id="" />
         </div>
 
-        <div className='w-full h-full bg-[#15141b] flex lg:flex-wrap sm:flex-row content-start justify-start overflow-scroll no-scrollbar gap-2'>
+        <div className='w-full h-full bg-[#15141b] flex lg:flex-wrap sm:flex-row content-start p-2 justify-start overflow-scroll no-scrollbar gap-2'>
           {filteredFoods.map(food => (
             food.buildIconWithAdd(selectFood, addCartCount)
           ))}
@@ -131,14 +139,13 @@ const Fridge = ({ user }) => {
         </div>
 
         <input className='bg-white' type="button" value="Take" onClick={() => {
+          if(!selectFood || cartCount == 0){return}
           handleSubmit()
-/*           if(selectFood in storedFoods){return}
-          purchaseFood([...storedFoods, selectedFood]) */
         }}/>
 
       </div>
 
-      <div className='w-2/6 h-full flex bg-[#15141b] flex-wrap overflow-scroll'>
+      <div className='w-2/6 h-full flex bg-[#15141b] flex-wrap no-scrollbar content-start p-2 justify-start overflow-scroll no-scrollbar gap-2'>
         {storedFoods?.map(food => (
           food.buildIconWithAdd()
         ))}

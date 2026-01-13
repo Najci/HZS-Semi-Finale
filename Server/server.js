@@ -58,8 +58,6 @@ app.get('/api/getinventory/:userId', async (req, res) => {
             });
         }
 
-        console.log(foodData)
-
         res.status(200).json(foodData)
     }
     catch(error){
