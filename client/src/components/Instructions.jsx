@@ -1,6 +1,5 @@
 import React from 'react'
 /* import '../css/Instructions.css' */
-import imgStrela from '../assets/strela.png'
 import { useNavigate } from 'react-router-dom'
 
 const Instructions = () => {

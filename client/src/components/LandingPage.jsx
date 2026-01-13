@@ -1,17 +1,11 @@
 import React, { useEffect } from 'react'
-
-import svgPaths from "../assets/svgs";
-import imgLogo from "../assets/Logo.png";
-import imgLandingPageImage from "../assets/teens-socializing.jpg";
-import imgImage from "../assets/open-mind.png"
-import imgImage1 from "../assets/game-controller.png";
 import { Link, useNavigate } from 'react-router-dom';
 
 function Company1() {
   return (
     <div className="basis-0 content-stretch flex gap-[8px] grow items-center min-h-px min-w-px relative shrink-0" data-name="Company">
       <div className="h-[80px] relative shrink-0 w-[83px]" data-name="Logo">
-        <img alt="Logomark" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none size-full" src={imgLogo} />
+        <img alt="Logomark" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none size-full"  />
       </div>
       <div className="basis-0 flex flex-col font-['Inter:Semi_Bold',_sans-serif] font-semibold grow justify-center leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-[24px] text-black tracking-[-0.48px]">
         <p className="leading-[1.45]">Pluralia</p>
@@ -59,6 +53,7 @@ function Header1() {
 }
 
 function Text() {
+
   return (
     <div className="content-stretch flex flex-col gap-[32px] items-center leading-[0] relative shrink-0 text-center w-full" data-name="Text">
       <div className="flex flex-col font-['Inter:Bold',_sans-serif] font-bold justify-center min-w-full not-italic relative shrink-0 text-[#2b2b2b] text-[64px] tracking-[-1.6px]" style={{ width: "min-content" }}>
@@ -125,7 +120,7 @@ function Image() {
         <div className="box-border content-stretch flex flex-col gap-[57px] h-[716px] items-center justify-center px-[64px] py-0 relative w-full">
           <Buttons1 />
           <div className="h-[542px] relative rounded-[40px] shadow-[0px_4px_20.8px_7px_rgba(0,0,0,0.25)] shrink-0 w-full" data-name="LandingPageImage">
-            <img alt="Landing detail" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none rounded-[40px] size-full" src={imgLandingPageImage} />
+            <img alt="Landing detail" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none rounded-[40px] size-full"  />
           </div>
         </div>
       </div>
@@ -237,7 +232,7 @@ function Image1() {
     <div className="basis-0 content-stretch flex flex-col gap-[8px] grow h-[432px] items-start min-h-px min-w-px relative shrink-0" data-name="Image">
       <div className="basis-0 grow min-h-px min-w-px relative rounded-[16px] shrink-0 w-full" data-name="Image">
         <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-[16px]">
-          <img alt="Product detail" className="absolute h-full left-[7.81%] max-w-none top-0 w-[84.37%]" src={imgImage} />
+          <img alt="Product detail" className="absolute h-full left-[7.81%] max-w-none top-0 w-[84.37%]" />
         </div>
       </div>
     </div>
@@ -257,7 +252,7 @@ function Image2() {
   return (
     <div className="basis-0 content-stretch flex flex-col gap-[8px] grow h-[432px] items-start min-h-px min-w-px relative shrink-0" data-name="Image">
       <div className="basis-0 grow min-h-px min-w-px relative rounded-[16px] shrink-0 w-full" data-name="Image">
-        <img alt="Product detail" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none rounded-[16px] size-full" src={imgImage1} />
+        <img alt="Product detail" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none rounded-[16px] size-full" />
       </div>
     </div>
   );
@@ -386,7 +381,7 @@ function TextRow() {
 function Image3() {
   return (
     <div className="relative rounded-[8px] shrink-0 size-[55px]" data-name="Image">
-      <img alt="Logomark" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none rounded-[8px] size-full" src={imgLogo} />
+      <img alt="Logomark" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none rounded-[8px] size-full"  />
     </div>
   );
 }
@@ -432,7 +427,7 @@ function SocialLink1() {
     <nav className="block relative shrink-0 size-[24px]" data-name="Social link 1">
       <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
         <g clipPath="url(#clip0_4_299)" id="Social link 1">
-          <path d={svgPaths.p3c382d72} fill="var(--fill-0, black)" fillOpacity="0.45" id="Vector" />
+          {/* <path d={svgPaths.p3c382d72} fill="var(--fill-0, black)" fillOpacity="0.45" id="Vector" /> */}
         </g>
         <defs>
           <clipPath id="clip0_4_299">
@@ -450,10 +445,10 @@ function SocialLink2() {
       <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
         <g clipPath="url(#clip0_4_305)" id="Social link 2">
           <g id="Vector">
-            <path clipRule="evenodd" d={svgPaths.p1fcf5070} fill="black" fillOpacity="0.45" fillRule="evenodd" />
+            {/* <path clipRule="evenodd" d={svgPaths.p1fcf5070} fill="black" fillOpacity="0.45" fillRule="evenodd" />
             <path d={svgPaths.pe7ea00} fill="var(--fill-0, white)" />
             <path d={svgPaths.p1ab31680} fill="var(--fill-0, white)" />
-            <path d={svgPaths.p28c6df0} fill="var(--fill-0, white)" />
+            <path d={svgPaths.p28c6df0} fill="var(--fill-0, white)" /> */}
           </g>
         </g>
         <defs>
@@ -471,7 +466,7 @@ function SocialLink3() {
     <div className="relative shrink-0 size-[24px]" data-name="Social link 3">
       <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
         <g id="Social link 3">
-          <path d={svgPaths.pdaf0200} fill="var(--fill-0, black)" fillOpacity="0.45" id="Vector" />
+          {/* <path d={svgPaths.pdaf0200} fill="var(--fill-0, black)" fillOpacity="0.45" id="Vector" /> */}
         </g>
       </svg>
     </div>
@@ -543,7 +538,6 @@ const LandingPage = ({user}) => {
       observer.observe(el);
     });
 
-    // Cleanup on unmount
     return () => observer.disconnect();
   }, []);
 

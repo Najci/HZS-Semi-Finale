@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate} from 'react-router-dom';
 /* import '../css/Login.css' */
 import axios from 'axios';
-import svgPaths from "../assets/svgs";
+import svgPaths from "../assets/images/svgs";
 
 const Login = ({ CreateCookie, user }) => {
   const [message, setMessage] = useState('');

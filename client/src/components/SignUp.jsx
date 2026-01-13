@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-import svgPaths from "../assets/svgs";
+import svgPaths from "../assets/images/svgs";
 
 function Frame3() {
   return <div className="absolute bg-white h-[59px] left-[78px] right-[86px] rounded-[40px] top-[37px]">

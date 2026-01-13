@@ -6,9 +6,8 @@ import Footer from './components/Footer';
 import Login from './components/Login';
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
-import Game from './components/Game';
+import Fridge from './components/Fridge';
 import Dashboard from './components/Dashboard';
-import Leaderboard from './components/Leaderboard';
 import Instructions from './components/Instructions';
 import LandingPage from './components/LandingPage';
 
@@ -39,16 +38,6 @@ const ProtectedRoute = ({ element, username}) => {
 function App() {
   const [cookie, setCookie] = useCookies(['user']);
 
-  const StudentAssignment = () => {
-    const { assignmentid}= useParams();
-    return (
-        <ProtectedRoute
-          element={<StudentQuiz cookie={cookie.user} assignmentId={assignmentid} id="student"/>}
-          user={cookie.user}
-        />
-    );
-  };
-
   function handleLogin(user) {
     setCookie('user', user, { path: '/' });
   }
@@ -66,11 +55,10 @@ function App() {
         <Footer user={cookie.user}/>
       </>
       }>
-        <Route path='/leaderboard' element={<ProtectedRoute element={<Leaderboard user={cookie.user} />} />}/>
+        <Route path='/store' element={<ProtectedRoute element={<Fridge user={cookie.user} />} />}/>
         <Route path="/signup" element={<SignUp CreateCookie={handleLogin} user={cookie.user} />} />
         <Route path="/login" element={ <Login CreateCookie={handleLogin} user={cookie.user} />} />
         <Route path='/' element={<LandingPage user={cookie.user} />} />
-        <Route path="/game" element={<ProtectedRoute element={<Game user={cookie.user} />} />} />
         <Route path="/dashboard" element={ <ProtectedRoute element={<Dashboard user={cookie.user} logoutFunction={handleLogout} />} />} />
         <Route path='/instructions' element={<Instructions user={cookie.user} />} />
       </Route>
@@ -78,9 +66,9 @@ function App() {
   );
 
   return (
-
+    <>
       <RouterProvider router={router} />
-
+    </>
   );
 }
 
