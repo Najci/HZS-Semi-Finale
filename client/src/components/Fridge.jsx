@@ -90,11 +90,11 @@ const Fridge = ({ user }) => {
         <div className='w-[120%] saturate-60 -mt-15 relative h-50 bg-size-[150%] bg-position-[center_right_3%] bg-no-repeat bg-[url(../assets/images/storeroof.png)]'></div>
 
         <div className='w-full h-20 -mt-5 pl-3 pr-3 pb-5 bg-[#1c1c29]'>
-          <input onChange={(e) => Searching(e.target.value)} className='bg-white w-full h-10 mt-5 text-center text-2xl' type="text" name="" id="" />
+          <input onChange={(e) => Searching(e.target.value)} placeholder='Search' className='bg-white w-full h-10 mt-5 text-center text-2xl' type="text" name="" id="" />
         </div>
 
         <div className='w-full h-full bg-[#15141b] flex lg:flex-wrap sm:flex-row content-start p-2 justify-start overflow-scroll no-scrollbar gap-2'>
-          {filteredFoods.map(food => (
+          {filteredFoods.slice().sort((a, b) => a.Name.localeCompare(b.Name)).map(food => (
             food.buildIconWithAdd(selectFood, addCartCount)
           ))}
         </div>
@@ -146,8 +146,8 @@ const Fridge = ({ user }) => {
       </div>
 
       <div className='w-2/6 h-full flex bg-[#15141b] flex-wrap no-scrollbar content-start p-2 justify-start overflow-scroll no-scrollbar gap-2'>
-        {storedFoods?.map(food => (
-          food.buildIconWithAdd()
+        {storedFoods?.slice().sort((a, b) => a.Name.localeCompare(b.Name)).map(food => (
+          food.buildIcon()
         ))}
       </div>
 

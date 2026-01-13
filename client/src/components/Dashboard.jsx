@@ -6,6 +6,8 @@ import { FoodListItem } from './FoodComponents/FoodProp'
 import axios from 'axios'
 import DragLayer from './DragComponents/DragLayer'
 import FoodStats from './FoodComponents/FoodStats'
+import PlateComponent from './DragComponents/PlateComponent'
+import ClearConfirmation from './Overlays/ClearConfirmation'
 
 
 const Dashboard = ({user, logoutFunction}) => {
@@ -17,20 +19,39 @@ const Dashboard = ({user, logoutFunction}) => {
   const hoverPlateRef = useRef(false)
   const draggingRef = useRef(null)
   const [plateItems, addPlateItem] = useState([])
+  const [visiblePlateItems, addVisiblePlateItem] = useState([])
+  const [search, setSearch] = useState("")
+  const [filteredFoods, setFilteredFoods] = useState(null)
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     GetInventory()
   },[])
 
   useEffect(() => {
+    if(search.length == 0){
+      setFilteredFoods(null)
+      addPlateItem([...plateItems])
+      return
+    }
+
+    const filtered = [...plateItems].filter(food =>
+      food.Name.toLowerCase().startsWith(search)
+    )
+
+    setFilteredFoods(filtered)
+  },[search])
+
+  useEffect(() => {
     const totals = plateItems.reduce(
       (acc, item) => {
         const count = (parseInt(item.Count) || 0);
+
         acc.Calories += item.Calories * count;
-        acc.Protein  += item.Protein  * count;
-        acc.Fat     += item.Fat   * count;
-        acc.Sugar    += item.Sugar    * count;
-        acc.Carbs    += item.Carbs    * count;
+        acc.Protein += item.Protein * count;
+        acc.Fat += item.Fat * count;
+        acc.Sugar += item.Sugar * count;
+        acc.Carbs += item.Carbs * count;
 
         return acc;
       },
@@ -64,23 +85,31 @@ const Dashboard = ({user, logoutFunction}) => {
     }));
   }
 
-  const onUp = () => {
+  const onUp = (e) => {
     document.removeEventListener("mousemove", onMove);
     document.removeEventListener("mouseup", onUp);
 
     //ADDS ITEM TO PLATE
-    if (hoverPlateRef.current && draggingRef.current) {
+    if (hoverPlateRef.current.bool && draggingRef.current) {
       console.log("Dropped on plate:", draggingRef.current);
 
       const existingItem = plateItems.find(item => item._id === draggingRef.current._id);
+
+      const imgToStore = draggingRef.current.Img
+      addVisiblePlateItem(prev => [...prev, {
+        posX: e.clientX - hoverPlateRef.current.target.getBoundingClientRect().left,
+        posY: e.clientY - hoverPlateRef.current.target.getBoundingClientRect().top,
+        Img: imgToStore
+      }])
     
       //UI ADDS 1 ITEM TO PLATE WHILE REMOVING FOOD REF COUNT BY 1
       if (existingItem) {
         existingItem.Count = (parseInt(existingItem.Count) || 1) + 1 + "x";
         
-        addPlateItem(prev => [...prev]);
+        addPlateItem(prev => [...prev, ]);
       }
       else{
+
         const foodItem = draggingRef.current.copyTableData();
         foodItem.Count = "1x";
 
@@ -118,7 +147,7 @@ const Dashboard = ({user, logoutFunction}) => {
 
   return (
     <div className='bg-[#292838] h-screen flex flex-col justify-between'>
-
+      
       <div>
         <h2 className='text-white text-center text-5xl'>Welcome back, {user?.username}</h2>
       </div>
@@ -142,36 +171,61 @@ const Dashboard = ({user, logoutFunction}) => {
         </div>
 
         <div className='w-[28%] h-full flex flex-col justify-around'>
-          <div className='w-full h-20 bg-white'> </div>
+          
+          <div className='w-full h-15 text-center'> 
+            <input className='bg-indigo-800 transition duration-1000 hover:drop-shadow-[0_0_10px_rgba(50,20,200,1)] text-white w-3/4 h-full rounded-xl drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]' type="button" value="✨Suggest a meal using AI✨" />
+          </div>
 
-          <div className='bg-[url(../assets/foodIcons/food.png)] drop-shadow-[0_50px_35px_rgba(0,0,0,.5)] bg-contain bg-center bg-no-repeat h-40 w-full' 
-            onMouseEnter={() => {setHoverPlate(true); hoverPlateRef.current = true;}}
-            onMouseLeave={() => {setHoverPlate(false); hoverPlateRef.current = false;}}
-          ></div>
+          <div className='bg-[url(../assets/foodIcons/food.png)] drop-shadow-[0_50px_35px_rgba(0,0,0,.5)] bg-contain bg-center bg-no-repeat h-40 w-full'>
+            <div 
+              className='mx-auto mt-3 w-4/5 h-3/4 relative' 
+              onMouseEnter={(e) => { setHoverPlate(true); hoverPlateRef.current = { bool: true, target: e.currentTarget }}}
+              onMouseLeave={() => { setHoverPlate(false); hoverPlateRef.current = { bool: false }}}
+            >
+              {visiblePlateItems.map((item, index) => (
+                <PlateComponent key={index} properties={item}/>
+              ))}
+            </div>
+          </div>
 
-          <div className='bg-white w-full h-20'>
-            <input type="button" value="Clear" />
-            <input type="button" value="Create" />
-            <input type="button" value="Undo" />
+
+          <div className='w-full h-15 flex flex-row justify-between'>
+            <input className='bg-[#15141b] hover:bg-red-800 transition duration-1000 hover:drop-shadow-[0_0_10px_rgba(100,20,27,1)] text-white w-1/4 h-full rounded-xl drop-shadow-2xl' type="button" value="Clear" onClick={
+              () => {setShowConfirmation(true)}
+            }/>
+            <input className='bg-[#15141b] hover:bg-green-800 transition duration-1000 hover:drop-shadow-[0_0_10px_rgba(21,100,27,1)] text-white w-1/3 h-full rounded-xl drop-shadow-2xl' type="button" value="Create" />
+            <input className='bg-[#15141b] hover:bg-orange-800 transition duration-1000 hover:drop-shadow-[0_0_10px_rgba(100,50,27,1)] text-white w-1/4 h-full rounded-xl drop-shadow-2xl' type="button" value="Undo" />
           </div>
         </div>
 
-        <div className='bg-[#15141b] w-[25%] h-full'>
-          {plateItems.map((item, index) => (
-            <FoodListItem key={index} Img={item.Img} Count={item.Count} Name={item.Name}/>
-          ))}
+        <div className='bg-[#15141b] w-[25%] h-full p-3 flex flex-col justify-center items-center rounded-xl gap-3 drop-shadow-2xl'>
+          <p className='text-white text-3xl text-center'>Foods on plate</p>
+
+          <input className='bg-white w-full h-10  text-center text-xl' type="text" placeholder='Search' name="" id="" onChange={
+            (e) => {
+              setSearch(e.target.value)
+            }
+          }/>
+
+          <div className='h-full w-full p-3 overflow-scroll no-scrollbar flex flex-col gap-3'>
+            {(filteredFoods || plateItems).map((item, index) => (
+              <FoodListItem key={index} Img={item.Img} Count={item.Count} Name={item.Name}/>
+            ))}
+          </div>
+
         </div>
+
       </div>
 
       <div className='bg-[#15141b] w-full h-25 p-2 flex flex-row'>
 
         <div className='w-[91%] h-full flex flex-row gap-3 overflow-scroll flex-wrap no-scrollbar scroll-smooth'>
-          {inventory.map(item => (
+          {inventory.slice().sort((a, b) => a.Name.localeCompare(b.Name)).map(item => (
             item.buildIconWithDrag(startDrag)
           ))}
         </div>
 
-        <div className='bg-[#222238] h-21 w-35 flex flex-col p-2 fixed right-2' onClick={() => navigate("/store")}>
+        <div className='bg-[#222238] hover:bg-[#181827] transition h-21 w-35 flex flex-col p-2 fixed right-2' onClick={() => navigate("/store")}>
           <div className="bg-[url(../assets/images/trolley.png)] not-odd:w-full saturate-75 h-full bg-no-repeat bg-center bg-contain" ></div>
           <p className='text-white text-center w-full'>Shop</p>
         </div>
@@ -179,6 +233,10 @@ const Dashboard = ({user, logoutFunction}) => {
       </div>
 
       <DragLayer dragging = {dragging}/>
+      {showConfirmation && <ClearConfirmation onCancel={() => setShowConfirmation(false)} onClear={() => {
+        setShowConfirmation(false)
+        window.location.reload()
+      }}/>}
 
     </div>
   )

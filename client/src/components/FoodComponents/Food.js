@@ -1,4 +1,4 @@
-import {FoodNormal, FoodSmall} from './FoodProp'
+import {FoodInventoryItem, FoodListItem, FoodNormal, FoodSmall} from './FoodProp'
 import React from 'react'
 import axios from 'axios'
 
@@ -43,6 +43,10 @@ class FoodClass extends FoodStatsClass{
             selectFood(this)
             addCartCount(0)
         }})
+    }
+
+    buildIcon(){
+        return React.createElement(FoodInventoryItem,{Img: this.Img, Name: this.Name, key: this.Name, Count: this.Count})
     }
 
     buildIconWithDrag(startDrag){
