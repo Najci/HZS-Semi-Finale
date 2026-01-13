@@ -1,14 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react'
 /* import '../css/Dashboard.css' */
 import { Link, useNavigate } from 'react-router-dom'
-import { buildFoodClass, FoodClass }  from './FoodComponents/Food'
+import { buildFoodClass, FoodClass, FoodStatsClass }  from './FoodComponents/Food'
 import { FoodListItem } from './FoodComponents/FoodProp'
 import axios from 'axios'
 import DragLayer from './DragComponents/DragLayer'
+import FoodStats from './FoodComponents/FoodStats'
 
 
 const Dashboard = ({user, logoutFunction}) => {
   const navigate = useNavigate()
+  const [foodProperties, setFoodProperties] = useState(new FoodStatsClass(0,0,0,0,0))
   const [inventory, setInventory] = useState([])
   const [dragging, setDragging] = useState(null)
   const [hoverPlate, setHoverPlate] = useState(false)
@@ -19,6 +21,25 @@ const Dashboard = ({user, logoutFunction}) => {
   useEffect(() => {
     GetInventory()
   },[])
+
+  useEffect(() => {
+    const totals = plateItems.reduce(
+      (acc, item) => {
+        const count = (parseInt(item.Count) || 0);
+        acc.Calories += item.Calories * count;
+        acc.Protein  += item.Protein  * count;
+        acc.Fat     += item.Fat   * count;
+        acc.Sugar    += item.Sugar    * count;
+        acc.Carbs    += item.Carbs    * count;
+
+        return acc;
+      },
+      new FoodStatsClass(0, 0, 0, 0, 0)
+    );
+
+    setFoodProperties(totals);
+  }, [plateItems]);
+
 
   const startDrag = (e, food) => {
     e.preventDefault(); 
@@ -47,11 +68,13 @@ const Dashboard = ({user, logoutFunction}) => {
     document.removeEventListener("mousemove", onMove);
     document.removeEventListener("mouseup", onUp);
 
+    //ADDS ITEM TO PLATE
     if (hoverPlateRef.current && draggingRef.current) {
-      console.log("Dropped on plate:", draggingRef.current.Name);
+      console.log("Dropped on plate:", draggingRef.current);
 
       const existingItem = plateItems.find(item => item._id === draggingRef.current._id);
     
+      //UI ADDS 1 ITEM TO PLATE WHILE REMOVING FOOD REF COUNT BY 1
       if (existingItem) {
         existingItem.Count = (parseInt(existingItem.Count) || 1) + 1 + "x";
         
@@ -60,8 +83,14 @@ const Dashboard = ({user, logoutFunction}) => {
       else{
         const foodItem = draggingRef.current.copyTableData();
         foodItem.Count = "1x";
-      
+
         addPlateItem(prev => [...prev, foodItem]);
+      }
+
+      draggingRef.current.Count = (parseInt(draggingRef.current.Count) || 0) - 1 + "x"
+      
+      if ((parseInt(draggingRef.current.Count) || 0) == 0){
+        setInventory([...inventory])
       }
     }
 
@@ -83,7 +112,7 @@ const Dashboard = ({user, logoutFunction}) => {
       })
     })
     .catch((error) => {
-
+      console.log(error)
     })
   }
 
@@ -105,45 +134,9 @@ const Dashboard = ({user, logoutFunction}) => {
 
           <div className='w-full h-[90%] text-white flex flex-col justify-start p-3 gap-3 overflow-scroll no-scrollbar'>
 
-            <div className='h-1/5 w-full bg-[#1c1c29] p-3 drop-shadow-2xl'>
-              <p>Calories</p>
-
-              <div className='bg-black w-full h-2'>
-                <div className='bg-green-600 w-2/3 h-full'></div>
-              </div>
-            </div>
-
-            <div className='h-1/5 w-full bg-[#1c1c29] p-3 drop-shadow-2xl'>
-              <p>Protien</p>
-
-              <div className='bg-black w-full h-2'>
-                <div className='bg-green-600 w-1/3 h-full'></div>
-              </div>
-            </div>
-
-            <div className='h-1/5 w-full bg-[#1c1c29] p-3 drop-shadow-2xl'>
-              <p>Fat</p>
-
-              <div className='bg-black w-full h-2'>
-                <div className='bg-green-600 w-3/3 h-full'></div>
-              </div>
-            </div>
-
-            <div className='h-1/5 w-full bg-[#1c1c29] p-3 drop-shadow-2xl'>
-              <p>Sugar</p>
-
-              <div className='bg-black w-full h-2'>
-                <div className='bg-green-600 w-1/8 h-full'></div>
-              </div>
-            </div>
-
-            <div className='h-1/5 w-full bg-[#1c1c29] p-3 drop-shadow-2xl'>
-              <p>Carbs</p>
-
-              <div className='bg-black w-full h-2'>
-                <div className='bg-green-600 w-5/8 h-full'></div>
-              </div>
-            </div>
+            {FoodStatsClass.returnStats().map((item, index) => (
+              <FoodStats key={index} statName={item} plateStatData={foodProperties}/>
+            ))}
 
           </div>
         </div>

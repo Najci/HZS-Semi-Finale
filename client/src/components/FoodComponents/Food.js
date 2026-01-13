@@ -2,26 +2,38 @@ import {FoodNormal, FoodSmall} from './FoodProp'
 import React from 'react'
 import axios from 'axios'
 
-class FoodClass{
+class FoodStatsClass{
+    Calories 
+    Protein
+    Fat 
+    Sugar
+    Carbs
+
+    constructor(calories, protiens, fats, sugar, carbs){
+        this.Calories = calories || 0
+        this.Protein = protiens || 0
+        this.Fat = fats || 0
+        this.Sugar = sugar || 0
+        this.Carbs = carbs || 0
+    }
+
+    static returnStats(){
+        return ["Calories", "Protein", "Fat", "Sugar", "Carbs"]
+    }
+}
+
+class FoodClass extends FoodStatsClass{
     _id
     Name
     Img
-    Calories
-    Protein
-    Fats
-    Sugar
-    Carbs
     Count
 
-    constructor(ID, name, img, calories, protiens, fats, sugar, carbs){
+    constructor(ID, name, img, calories, proteins, fats, sugar, carbs){
+        super(calories, proteins, fats, sugar, carbs);
+
         this._id = ID
         this.Name = name
         this.Img = `/src/assets/foodIcons/${img}`
-        this.Calories = calories
-        this.Protein = protiens
-        this.Fats = fats
-        this.Sugar = sugar
-        this.Carbs = carbs
         this.Count = ""
     }
 
@@ -34,11 +46,24 @@ class FoodClass{
     }
 
     buildIconWithDrag(startDrag){
+        if((parseInt(this.Count) || 0) == 0){console.log(this.Name, "is not loading"); return}
         return React.createElement(FoodNormal,{Img: this.Img, Name: this.Name, key: this.Name, Count: this.Count, ClickAction: (e) => startDrag(e, this)})
     }
 
-    copyTableData(){
-        return { ...this }
+    copyTableData() {
+        const copy = new FoodClass(
+            this._id,
+            this.Name,
+            this.Img.split("/").pop(),
+            this.Calories,
+            this.Protein,
+            this.Fat,
+            this.Sugar,
+            this.Carbs
+        );
+    
+        copy.Count = this.Count;
+        return copy;
     }
 }
 
@@ -57,4 +82,4 @@ const buildFoodClass = (item) => {
     return foodItem
 }
 
-export {FoodClass, buildFoodClass} 
+export {FoodClass, buildFoodClass, FoodStatsClass} 

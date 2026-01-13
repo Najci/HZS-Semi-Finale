@@ -112,7 +112,7 @@ const Fridge = ({ user }) => {
           <div className='w-2/3 h-full'>
             <p>Calories: {(selectedFood.Calories * cartCount)}cal</p>
             <p>Protien: {(selectedFood.Protein * cartCount).toFixed(1)}g</p>
-            <p>Fat: {(selectedFood.Fats * cartCount).toFixed(1)}g</p>
+            <p>Fat: {(selectedFood.Fat * cartCount).toFixed(1)}g</p>
           </div>
 
           <div>
