@@ -11,6 +11,10 @@ const saltRounds = 1;
 const session = require('express-session')
 const bodyParser = require('body-parser');
 
+require("dotenv").config({ path: "../secret.env" });
+const OpenAI = require("openai");
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY});
+
 connectDB()
 
 app.use(express.json())
@@ -35,6 +39,79 @@ app.use(session({
 function createSession(data){
     return {username: data.username, email: data.email}
 }
+
+app.post('/api/getmeal', async (req, res) => {
+    const data = req.body;
+
+    const prompt = data.data.map(food => `${food.Amount}${food.Measurement} ${food.Name}`);
+    const promptString = prompt.join(", ");
+
+    console.log("Prompt string:", promptString);
+
+    try {
+        const response = await openai.responses.create({
+            model: "gpt-4.1-mini",
+            input: `Generate a cartoon style image, similar to the style from flaticon, of a plate that has: ${promptString}`,
+            tools: [{ type: "image_generation" }],
+        });
+
+        console.log(response);
+
+        const imageData = response.output
+        .filter(output => output.type === "image_generation_call")
+        .map(output => output.result);
+
+        if (imageData.length > 0) {
+            const imageBase64 = imageData[0];
+            const fs = await import("fs");
+
+            fs.writeFileSync("plate.png", Buffer.from(imageBase64, "base64"));
+            console.log("Image saved as plate.png");
+        }
+    }
+    catch(error){
+        console.log(error)
+        res.status(500).send(error)
+    }
+
+    console.log(data)
+})
+
+app.delete('/api/removeinventoryitem', async (req, res) => {
+    const data = req.body
+
+    try{
+
+        const currentItem = await userFoodCount.findOne({ food: data.removalData._id, user: data.user._id })
+        if(!currentItem){
+            res.status(404).json({ error: "Could not find item to remove" })
+        }
+
+        const removalValue = currentItem.count - data.removalData.numberToRemove
+
+        if (removalValue <= 0){
+            await userFoodCount.deleteOne({ food: data.removalData._id, user: data.user._id });
+            res.status(200).send("Item removed from storage due to count < 0");
+        }
+        else{
+            await userFoodCount.findOneAndUpdate(
+                { user: data.user._id, food: data.removalData._id },
+                {
+                    count: removalValue,         
+                    user: data.user._id,
+                    food: data.removalData._id
+                },
+                { upsert: false, new: true }
+            );
+
+            res.status(200).send("Item count reduced by removal count")
+        }
+       
+    }
+    catch (error) {
+        res.status(500).send(error.message);
+    }
+})
 
 app.get('/api/getinventory/:userId', async (req, res) => {
     try{
@@ -78,8 +155,6 @@ app.get('/api/getstore', async (req, res) => {
 app.post('/api/updateinventory', async (req, res) => {
     try{
         const data = req.body
-        
-        console.log(req.body)
 
         const user = await User.findOne({ _id: data.user._id });
         if (!user) {
@@ -106,7 +181,6 @@ app.post('/api/updateinventory', async (req, res) => {
         res.status(200).send()
     }
     catch(error){
-        console.log(error)
         res.status(500)
     }
 })

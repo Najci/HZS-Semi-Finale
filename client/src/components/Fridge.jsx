@@ -7,6 +7,7 @@ import { buildFoodClass } from './FoodComponents/Food';
 
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import EditAmount from './Overlays/EditAmount';
 
 const Fridge = ({ user }) => {
 
@@ -16,6 +17,8 @@ const Fridge = ({ user }) => {
   const [loadedFoods, loadFoods] = useState([])
   const [selectedFood, selectFood] = useState(loadedFoods)
   const [filteredFoods, setFilteredFoods] = useState([...loadedFoods.values()])
+  const [editItem, setEditItem] = useState(null)
+  const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
     getFoods()
@@ -61,7 +64,7 @@ const Fridge = ({ user }) => {
 
       res.data?.forEach(item => {
         const foodItem = buildFoodClass(item)
-        foodItem.Count = `${item.count}x`
+        foodItem.Count = item.count
 
         setStoredFoods(prev => [...prev, foodItem])
       })
@@ -70,6 +73,17 @@ const Fridge = ({ user }) => {
     .catch((err) => {
       console.log(err)
     });
+  }
+
+  const removeItem = async (value) => {
+    await axios.delete(`http://localhost:3000/api/removeinventoryitem`, {data: {user : user, removalData: {...editItem, numberToRemove : value}}})
+    .then((res) => {
+      setEditItem(null)
+      getInventory()
+    })
+    .catch((error) => {
+
+    })
   }
 
   const handleSubmit = async () => {
@@ -100,24 +114,26 @@ const Fridge = ({ user }) => {
         </div>
       </div>
 
-      <div className='w-100 h-120 bg-[#15141b] p-5 flex flex-col drop-shadow-2xl'>
+      <div className='w-100 h-120 bg-[#15141b] p-5 flex flex-col drop-shadow-2xl rounded-xl gap-5'>
 
         <div className='h-30 w-30 mx-auto bg-[#1c1c29] p-4 rounded-2xl'>
           <div style={{ backgroundImage: `url(${selectedFood.Img})` }} className="w-full saturate-75 h-full bg-no-repeat bg-center bg-contain" ></div>
         </div>
 
-        <p className='text-center text-white mt-4 text-2xl'>{selectedFood.Name ? selectedFood.Name  : "Select a food item"}</p>
+        <p className='text-center text-white mt-4 text-2xl'>{selectedFood.Name ? selectedFood.Name  : "Select a food item"}({(selectedFood.Amount * (cartCount || 1)) || 0}{selectedFood.Measurement})</p>
 
-        <div className='text-white w-full mt-5 h-[30%] flex flex-row content-center justify-center text-xl'>
-          <div className='w-2/3 h-full'>
-            <p>Calories: {(selectedFood.Calories * cartCount)}cal</p>
-            <p>Protien: {(selectedFood.Protein * cartCount).toFixed(1)}g</p>
-            <p>Fat: {(selectedFood.Fat * cartCount).toFixed(1)}g</p>
+        <div className='text-white w-full h-[20%] flex flex-row content-center justify-between text-md'>
+          <div className='w-4/9 h-full'>
+            <p>Calories: {(selectedFood.Calories * cartCount) || 0}cal</p>
+            <p>Protien: {(selectedFood.Protein * cartCount || 0).toFixed(1)}g</p>
+            <p>Fat: {(selectedFood.Fat * cartCount || 0).toFixed(1)}g</p>
+            <p>Carbs: {(selectedFood.Carbs * cartCount || 0).toFixed(1)}g</p>
           </div>
 
-          <div>
-            <p>Sugar: {(selectedFood.Sugar * cartCount).toFixed(1)}g</p>
-            <p>Carbs: {(selectedFood.Carbs * cartCount).toFixed(1)}g</p>
+          <div className='h-full w-4/9'>
+            <p>Sugar: {(selectedFood.Sugar * cartCount || 0).toFixed(1)}g</p>
+            <p>GI: {(selectedFood.GI * cartCount || 0)}</p>
+            <p>GL: {(selectedFood.GL * cartCount || 0)}</p>
           </div>
         </div>
 
@@ -128,28 +144,75 @@ const Fridge = ({ user }) => {
           </div>
 
           <div className='flex flex-row gap-5'>
-            <div className='h-10 w-10 bg-[url(../assets/images/minus.png)] bg-center bg-no-repeat bg-contain mr-1' onClick={
+            <div className='h-10 w-10 bg-[url(../assets/images/minus.png)] hover:brightness-70 transition bg-center bg-no-repeat bg-contain mr-1' onClick={
               () => {if(cartCount-1<0){return} addCartCount(cartCount-1)}
             }></div>
 
-            <div className='h-10 w-10 bg-[url(../assets/images/plus.png)] bg-center bg-no-repeat bg-contain mr-1' onClick={
+            <div className='h-10 w-10 bg-[url(../assets/images/plus.png)] hover:brightness-70 transition bg-center bg-no-repeat bg-contain mr-1' onClick={
               () => {addCartCount(cartCount+1)}
             }></div>
           </div>
         </div>
 
-        <input className='bg-white' type="button" value="Take" onClick={() => {
-          if(!selectFood || cartCount == 0){return}
-          handleSubmit()
-        }}/>
+        <button
+          disabled={!selectFood || cartCount === 0}
+          onClick={() => {
+            handleSubmit();
+            setAnimate(false);
+            requestAnimationFrame(() => setAnimate(true));
+          }}
+          className={`
+            relative
+            bg-[#1c1c29]
+            text-white
+            h-10
+            w-full
+            rounded-xl
+            drop-shadow-2xl
+            hover:brightness-150
+            overflow-hidden
+            disabled:opacity-50
+            disabled:pointer-events-none
+          `}
+        >
+          <span className="relative z-10 w-full text-center">
+            Take
+          </span>
+
+          <div
+            className={`
+              absolute inset-0 rounded-xl
+              ${animate ? "rise-color" : ""}
+            `}
+          />
+        </button>
 
       </div>
 
-      <div className='w-2/6 h-full flex bg-[#15141b] flex-wrap no-scrollbar content-start p-2 justify-start overflow-scroll no-scrollbar gap-2'>
-        {storedFoods?.slice().sort((a, b) => a.Name.localeCompare(b.Name)).map(food => (
-          food.buildIcon()
-        ))}
+      <div className='w-2/6 h-full bg-[url(../assets/images/cupboard.png)] bg-cover bg-no-repeat px-9 pt-15 pb-11'>
+        
+        <div className='h-full bg-[#15141b] overflow-scroll flex no-scrollbar flex-wrap content-start justify-center p-3 gap-3'>
+          {storedFoods?.slice().sort((a, b) => a.Name.localeCompare(b.Name)).map(food => (
+            food.buildIcon(setEditItem)
+          ))}
+        </div>
+        
       </div>
+
+      {editItem && (
+        <>
+          <div
+            className="fixed inset-0 z-40 backdrop-blur-xs bg-black/40"
+            onClick={() => setEditItem(null)}
+          />
+
+          <div className="fixed z-50" onClick={(e) => {e.stopPropagation()}}>
+            <EditAmount selectedItem={editItem} onRemove={(value) => {
+              removeItem(value)
+            }}/>
+          </div>
+        </>
+      )}
 
     </div>
   )

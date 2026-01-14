@@ -7,13 +7,12 @@ function getGreenToRed(percent) {
 const FoodStats = ({statName, plateStatData}) => {
 
     const goalData = 1000
-
  
     const percent = Math.min(((parseInt(plateStatData[statName]) || 0) / goalData) * 100, 100)
 
 
     return (
-        <div className='h-1/5 w-full bg-[#1c1c29] p-3 drop-shadow-2xl'>
+        <div style={{backgroundColor: `${percent == 100 ? "rgb(28,41,29)" : "rgb(28,28,41)"}`}} className='h-1/5 w-full p-3 drop-shadow-2xl'>
             <div className='flex flex-row justify-between items-center'>
                 <p className='mb-1'>{statName}</p>
                 <p className='mb-1 text-xs'>{Number(plateStatData[statName]).toFixed(1)}/{goalData}</p>

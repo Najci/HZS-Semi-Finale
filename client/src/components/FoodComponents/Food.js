@@ -8,17 +8,21 @@ class FoodStatsClass{
     Fat 
     Sugar
     Carbs
+    GI
+    GL
 
-    constructor(calories, protiens, fats, sugar, carbs){
+    constructor(calories, protiens, fats, sugar, carbs, gi, gl){
         this.Calories = calories || 0
         this.Protein = protiens || 0
         this.Fat = fats || 0
         this.Sugar = sugar || 0
         this.Carbs = carbs || 0
+        this.GI = gi || 0
+        this.GL = gl || 0
     }
 
     static returnStats(){
-        return ["Calories", "Protein", "Fat", "Sugar", "Carbs"]
+        return ["Calories", "Protein", "Fat", "Sugar", "Carbs", "GI", "GL"]
     }
 }
 
@@ -27,14 +31,18 @@ class FoodClass extends FoodStatsClass{
     Name
     Img
     Count
+    Measurement
+    Amount
 
-    constructor(ID, name, img, calories, proteins, fats, sugar, carbs){
-        super(calories, proteins, fats, sugar, carbs);
+    constructor(ID, name, img, calories, proteins, fats, sugar, carbs, gi, gl, measurement, amount){
+        super(calories, proteins, fats, sugar, carbs, gi, gl);
 
         this._id = ID
         this.Name = name
         this.Img = `/src/assets/foodIcons/${img}`
-        this.Count = ""
+        this.Count = 0
+        this.Measurement = measurement
+        this.Amount = amount
     }
 
     buildIconWithAdd(selectFood, addCartCount){
@@ -45,12 +53,19 @@ class FoodClass extends FoodStatsClass{
         }})
     }
 
-    buildIcon(){
-        return React.createElement(FoodInventoryItem,{Img: this.Img, Name: this.Name, key: this.Name, Count: this.Count})
+    buildIcon(setEditItem){
+        return React.createElement(FoodInventoryItem,{Img: this.Img, Name: this.Name, key: this.Name, Count: this.Count, ClickAction: (e) => {
+            const rect = e.currentTarget.getBoundingClientRect()
+
+            setEditItem({...this.copyTableData(), Params : {
+                posX: rect.left,
+                posY: rect.top
+            }})
+        }})
     }
 
     buildIconWithDrag(startDrag){
-        if((parseInt(this.Count) || 0) == 0){console.log(this.Name, "is not loading"); return}
+        if(this.Count == 0){console.log(this.Name, "is not loading"); return}
         return React.createElement(FoodNormal,{Img: this.Img, Name: this.Name, key: this.Name, Count: this.Count, ClickAction: (e) => startDrag(e, this)})
     }
 
@@ -63,10 +78,15 @@ class FoodClass extends FoodStatsClass{
             this.Protein,
             this.Fat,
             this.Sugar,
-            this.Carbs
+            this.Carbs,
+            this.GI,
+            this.GL,
+            this.Measurement,
+            this.Amount
         );
+
+        copy.Count = this.Count
     
-        copy.Count = this.Count;
         return copy;
     }
 }
@@ -80,7 +100,11 @@ const buildFoodClass = (item) => {
         item.Pro,
         item.Fat,
         item.Sug,
-        item.Carbs
+        item.Carbs,
+        item.GI,
+        item.GL,
+        item.Measurement,
+        item.Amount
     )
 
     return foodItem

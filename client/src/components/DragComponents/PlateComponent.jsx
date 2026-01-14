@@ -10,7 +10,7 @@ function PlateComponent({ properties}) {
           top: properties.posY,
           pointerEvents: "none",
           transform: "translate(-50%, -50%)",
-          zIndex: 9999
+          zIndex: 99
         }}
         className="h-[9vh] w-[9vh]"
       >
