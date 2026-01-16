@@ -32,6 +32,11 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
+
+  .spinning-drop-shadow{
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
+    animation: spin-shadow 3s infinite linear
+  }
 }
 
 *{
@@ -45,9 +50,28 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0;
 }
 
+@keyframes spin-shadow {
+  0% {
+      box-shadow: 1px 1px 20px rgba(58, 8, 175, 1);
+  }
+  25% {
+      box-shadow: -1px 1px 20px rgba(58, 8, 175, 0.5);
+  }
+  50% {
+      box-shadow: -1px -1px 20px rgba(58, 8, 175, 1);
+  }
+  75% {
+      box-shadow: 1px -1px 20px rgba(58, 8, 175, 0.5);
+  }
+  100% {
+      box-shadow: 1px 1px 20px rgba(58, 8, 175, 1);
+  }
+}
+
 @keyframes rise-bounce {
     0% {
       transform: translateY(50px);
+      opacity: 0
     }
     60% {
       transform: translateY(-10px); /* overshoot up */
@@ -57,6 +81,7 @@ input[type=number]::-webkit-outer-spin-button {
     }
     100% {
       transform: translateY(0); /* settle */
+      opacity: 1
     }
   }
   

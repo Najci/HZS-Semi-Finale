@@ -2,12 +2,12 @@ import React from 'react'
 /* import '../css/Instructions.css' */
 import { useNavigate } from 'react-router-dom'
 
-const Instructions = () => {
+const Instructions = ({user}) => {
     const navigate = useNavigate()
 
     return (
         <div id="instructionsWrapper">
-            <img onClick={() => {navigate("/dashboard")}} id='BackButton' src={imgStrela} alt="" />
+            <img onClick={() => {navigate(`/dashboard/${user._id}`)}} id='BackButton' src={imgStrela} alt="" />
 
         <div id="instructionsPage">
                 <h1>How to play</h1>

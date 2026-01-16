@@ -516,7 +516,7 @@ const LandingPage = ({user}) => {
 
   useEffect(() => {
     if (user){
-      navigate('/dashboard')
+      navigate(`/home/${user._id}`)
       console.log('workin')
     }
   }, [])

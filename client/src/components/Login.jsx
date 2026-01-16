@@ -8,13 +8,14 @@ import svgPaths from "../assets/images/svgs";
 const Login = ({ CreateCookie, user }) => {
   const [message, setMessage] = useState('');
   const navigate = useNavigate()
+  const [userd, setUser] = useState()
 
   useEffect(() => {
     if (user){
-      navigate('/dashboard')
+      navigate(`/dashboard/${user._id}`)
       console.log('workin')
     }
-  }, [])
+  }, [userd])
 
 
   const submit = (e) => {
@@ -26,11 +27,12 @@ const Login = ({ CreateCookie, user }) => {
      axios.post('http://localhost:3000/login', formData)
     .then(function (response) {
       CreateCookie(response.data)
-      navigate('/dashboard')
+      setUser(response.data)
+      navigate(`/dashboard/${user?._id}`)
 
     })
     .catch(function (error) {
-      setMessage(error.response.data)
+      setMessage(error.response?.data)
     });
   }
 

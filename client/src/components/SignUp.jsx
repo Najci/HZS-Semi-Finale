@@ -42,7 +42,7 @@ const SignUp = ({user, CreateCookie}) => {
 
   useEffect(() => {
     if (user){
-      navigate('/dashboard')
+      navigate(`/dashboard/${user._id}`)
       console.log('workin')
     }
   }, [])
@@ -53,10 +53,10 @@ const SignUp = ({user, CreateCookie}) => {
     const form = new FormData(e.target); 
     const formData = Object.fromEntries(form.entries())
 
-    axios.post('http://localhost:3000/signup', formData)
+    axios.post('http://localhost:3000/signup', formData, {withCredentials: true})
     .then(function (response) {
       CreateCookie(response.data)
-      navigate('/dashboard')
+      navigate(`/dashboard/${user._id}`)
       console.log(response.data)
     })
     .catch(function (error) {

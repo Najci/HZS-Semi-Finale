@@ -40,7 +40,7 @@ const Fridge = ({ user }) => {
   },[search, loadedFoods])
 
   const getFoods = async () => {
-    await axios.get(`http://localhost:3000/api/getstore`)
+    await axios.get(`http://localhost:3000/api/getstore`, {withCredentials: true})
     .then((res) => {
 
       const Foods = new Map()
@@ -58,7 +58,7 @@ const Fridge = ({ user }) => {
   }
  
   const getInventory = async () => {
-    await axios.get(`http://localhost:3000/api/getinventory/${user?._id}`)
+    await axios.get(`http://localhost:3000/api/getinventory/${user?._id}`, {withCredentials: true})
     .then((res) => {
       setStoredFoods([])
 
@@ -76,7 +76,7 @@ const Fridge = ({ user }) => {
   }
 
   const removeItem = async (value) => {
-    await axios.delete(`http://localhost:3000/api/removeinventoryitem`, {data: {user : user, removalData: {...editItem, numberToRemove : value}}})
+    await axios.delete(`http://localhost:3000/api/removeinventoryitem`, {data: {user : user, removalData: {...editItem, numberToRemove : value}}}, {withCredentials: true})
     .then((res) => {
       setEditItem(null)
       getInventory()
@@ -87,7 +87,7 @@ const Fridge = ({ user }) => {
   }
 
   const handleSubmit = async () => {
-    await axios.post(`http://localhost:3000/api/updateinventory`, {user : user, food : selectedFood, count : cartCount})
+    await axios.post(`http://localhost:3000/api/updateinventory`, {user : user, food : selectedFood, count : cartCount}, {withCredentials: true})
     .then(function(response) {
       getInventory()
     })

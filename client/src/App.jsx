@@ -10,11 +10,12 @@ import Fridge from './components/Fridge';
 import Dashboard from './components/Dashboard';
 import Instructions from './components/Instructions';
 import LandingPage from './components/LandingPage';
+import {profileRoutes} from './components/Profile/Profile';
+import Home from './components/Home';
+import Header from './components/Header';
 
 const ProtectedRoute = ({ element, username}) => {
   const user = element.props.user
-
-  const currentUrl = useLocation().pathname
 
   if (!user) {
     return <Navigate to="/" />;
@@ -50,16 +51,19 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromChildren(
       <Route element={
-      <>
-        <Main />
-        <Footer user={cookie.user}/>
-      </>
+        <div className='h-screen flex flex-col overflow-hidden'>
+          <Header user={cookie.user} />
+          <Main />
+{/*           <Footer user={cookie.user}/> */}
+        </div>
       }>
+        {profileRoutes(cookie.user, handleLogout)}
         <Route path='/store' element={<ProtectedRoute element={<Fridge user={cookie.user} />} />}/>
         <Route path="/signup" element={<SignUp CreateCookie={handleLogin} user={cookie.user} />} />
         <Route path="/login" element={ <Login CreateCookie={handleLogin} user={cookie.user} />} />
         <Route path='/' element={<LandingPage user={cookie.user} />} />
-        <Route path="/dashboard" element={ <ProtectedRoute element={<Dashboard user={cookie.user} logoutFunction={handleLogout} />} />} />
+        <Route path={`home/${cookie.user?._id}`} element={<ProtectedRoute element={<Home user={cookie.user} />} />} />
+        <Route path={`/dashboard/${cookie.user?._id}`} element={ <ProtectedRoute element={<Dashboard user={cookie.user}/>} />} />
         <Route path='/instructions' element={<Instructions user={cookie.user} />} />
       </Route>
     )
@@ -72,4 +76,4 @@ function App() {
   );
 }
 
-export default App;
+export {ProtectedRoute, App};

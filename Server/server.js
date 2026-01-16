@@ -4,21 +4,50 @@ const connectDB = require('./config/maxDB');
 const cors = require('cors');
 const User = require('./models/user-model')
 const Food = require('./models/food-model')
+const mealHistory = require('./models/mealhistory-model')
 const userFoodCount = require('./models/userfoodcount-model');
+const zlib = require('zlib')
 const Joi = require('joi');
 const bcrypt = require('bcryptjs')
 const saltRounds = 1;
 const session = require('express-session')
 const bodyParser = require('body-parser');
+const fs = require("fs/promises")
+
+process.env.GOOGLE_APPLICATION_CREDENTIALS = "./upheld-magpie-484514-k4-d1feab917cd4.json";
+
+const { Storage } = require("@google-cloud/storage");
+
+const storage = new Storage();
+const bucketName = "fullplatedb";
+const bucket = storage.bucket(bucketName);
+
 
 require("dotenv").config({ path: "../secret.env" });
 const OpenAI = require("openai");
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY});
+const openai = new OpenAI({
+        timeout: 60000,
+        apiKey: process.env.OPENAI_API_KEY
+    });
 
 connectDB()
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+async function uploadImageToGCS(imageBuffer, filename) {
+    const file = bucket.file(filename);
+  
+    await file.save(imageBuffer, {
+      resumable: false,
+      contentType: 'image/png',           
+    });
+  
+    const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
+    return publicUrl;
+}
+  
+
+app.use(express.json({ limit: "50mb" }))
+app.use(express.urlencoded({ extended: true, limit: "50mb" }))
+
 
 app.use(cors({
     origin: "http://localhost:5173",
@@ -40,42 +69,169 @@ function createSession(data){
     return {username: data.username, email: data.email}
 }
 
-app.post('/api/getmeal', async (req, res) => {
-    const data = req.body;
+app.get("/api/gethistory/:userId/meal/:mealId", async (req, res) => {
+    const data = req.params
 
-    const prompt = data.data.map(food => `${food.Amount}${food.Measurement} ${food.Name}`);
-    const promptString = prompt.join(", ");
+    try{
+        const foundMealHistory = await mealHistory.findOne({ user: data.userId });
 
-    console.log("Prompt string:", promptString);
-
-    try {
-        const response = await openai.responses.create({
-            model: "gpt-4.1-mini",
-            input: `Generate a cartoon style image, similar to the style from flaticon, of a plate that has: ${promptString}`,
-            tools: [{ type: "image_generation" }],
-        });
-
-        console.log(response);
-
-        const imageData = response.output
-        .filter(output => output.type === "image_generation_call")
-        .map(output => output.result);
-
-        if (imageData.length > 0) {
-            const imageBase64 = imageData[0];
-            const fs = await import("fs");
-
-            fs.writeFileSync("plate.png", Buffer.from(imageBase64, "base64"));
-            console.log("Image saved as plate.png");
+        if (!foundMealHistory) {
+            return res.status(404).send("Meal history wasn't found for current user");
         }
+
+        const foundMeal = foundMealHistory.meals.find(
+            meal => meal._id.toString() === data.mealId
+        );
+
+        const macroList = Object.values(foundMeal.recipe.Macro)
+
+        if(!foundMeal){
+            return res.status(404).send("Meal wasn't found for current user");
+        }
+
+        foundMeal.recipe.Macro = Object.values(foundMeal.recipe.Macro);
+
+        res.status(200).json(foundMeal.toObject());
     }
     catch(error){
         console.log(error)
-        res.status(500).send(error)
+        res.status(500).send({error: error})
     }
-
-    console.log(data)
 })
+
+app.get("/api/gethistory/:userId", async (req, res) => {
+    const data = req.params
+
+    try{
+        const foundMealHistory = await mealHistory.findOne({ user: data.userId });
+
+        if (!foundMealHistory) {
+            return res.status(404).send("Meal history wasn't found for current user");
+        }  
+
+        try {
+            res.json(foundMealHistory);
+        } 
+        catch (err) {
+            res.status(500).json({ message: "Failed to load meals", err: err });
+        }     
+    }
+    catch(error){
+        console.log(error)
+        res.status(500).send({error: error})
+    }
+})
+
+app.post("/api/getmeal", async (req, res) => {
+    try {
+        const data = req.body
+
+        const prompt = data.data.prompt.map(
+            food => `${food.Name} (${food.Amount}${food.Measurement})`
+        );
+
+        const promptString = prompt.join(", ");
+        console.log("Prompt string:", promptString);
+
+        const result = await openai.chat.completions.create({
+            model: "gpt-4.1-mini",
+            messages: [
+              { role: "user", content: `
+                    reply only with the json,
+                    create me a dish using the ingredients: ${promptString},
+                    along with a step by step recipe on how to make the dish.
+                    put all of this in a json format with the column names "name" and "steps".`           
+                },
+            ]
+        }); 
+
+       const cleanString = result.choices[0].message.content
+        .replace(/```json\s*/, "")
+        .replace(/```$/, "")
+        .trim();
+
+        let meal
+        try {
+            meal = JSON.parse(cleanString);
+        } 
+        catch(err) {
+            console.error("Failed to parse GPT JSON:", err);
+            return res.status(200).json({ success: false, error: "Invalid GPT output" });
+        } 
+
+        const image = await openai.images.generate({
+        model: "gpt-image-1",
+        size: "1024x1024",
+        background: "transparent",
+        prompt: `
+            Flat vector illustration in Flaticon icon style.
+            A delicious, finished, ready-to-eat meal served on a plate.
+            All ingredients are combined into a single cohesive dish,
+            not shown as separate items or raw components.
+            Simple shapes, smooth surfaces, pastel colors,
+            soft shading, clean outlines.
+            No realism, no textures, no stains, no spots, no mold.
+            Top-down or slight isometric view.
+            Isolated plate, transparent background.
+            
+            Meal name: ${meal.name},
+            Meal description: ${promptString}
+        `
+        });
+
+        const imageBase64 = image.data[0].b64_json;
+        
+        const mealWithMacro = {...meal, Macro: data.data.Macros}
+
+        const imageBuffer = Buffer.from(imageBase64, "base64");
+        const filename = `foodImages/${data.user._id}_${Date.now()}.png`;
+
+        let imageUrl
+        try {
+            imageUrl = await uploadImageToGCS(imageBuffer, filename);
+            console.log("Image uploaded successfully:", imageUrl);
+        } 
+        catch (err) {
+            console.error("Error uploading image:", err);
+        }
+
+        await mealHistory.findOneAndUpdate(
+            { user: data.user._id },
+            {
+              $setOnInsert: {
+                user: data.user._id
+              },
+              $push: {
+                meals: {
+                  $each: [{
+                    prompt: promptString,
+                    recipe: mealWithMacro,
+                    imageUrl: imageUrl,
+                    createdAt: new Date()
+                  }],
+                  $slice: -10
+                }
+              }
+            },
+            { upsert: true, new: true }
+        );
+
+        await fs.writeFile(
+            "plate6.png",
+            imageBuffer
+        );
+
+        console.log("server success")
+
+        res.status(200).json({
+            success: true,
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error });
+    }
+});
 
 app.delete('/api/removeinventoryitem', async (req, res) => {
     const data = req.body

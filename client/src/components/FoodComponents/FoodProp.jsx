@@ -60,4 +60,16 @@ const FoodListItem = ({Img, Name, ClickAction, Count, Measurement, Amount}) => {
   )
 }
 
-export {FoodNormal, FoodSmall, FoodListItem, FoodInventoryItem} 
+const MealListItem = ({data, onAction}) => {
+  return (
+    <div className='bg-[#1c1c29] hover:bg-[#212130] w-full flex flex-row h-20 justify-between items-center p-2 pl-3 pr-3 rounded-3xl' onClick={() => onAction()}>
+      <p className='text-white w-3/4 text-sm'>{data.recipe.name}</p>
+
+      <div className='justify-center items-center h-full gap-2 flex flex-row w-1/4'>
+        <div style={{ backgroundImage: `url(${data.imageUrl})` }} className="w-full h-full bg-no-repeat bg-contain" ></div>
+      </div>
+    </div>
+  )
+}
+
+export {FoodNormal, FoodSmall, FoodListItem, FoodInventoryItem, MealListItem} 

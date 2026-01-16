@@ -5,12 +5,16 @@ import { buildFoodClass, FoodClass, FoodStatsClass }  from './FoodComponents/Foo
 import { FoodListItem } from './FoodComponents/FoodProp'
 import axios from 'axios'
 import DragLayer from './DragComponents/DragLayer'
-import FoodStats from './FoodComponents/FoodStats'
+import {FoodStats} from './FoodComponents/FoodStats'
 import PlateComponent from './DragComponents/PlateComponent'
 import ClearConfirmation from './Overlays/ClearConfirmation'
+import CreatingMeal from './Overlays/CreatingMeal'
+import PlateError from './Overlays/PlateError'
+
+const maxFetches = 3
 
 
-const Dashboard = ({user, logoutFunction}) => {
+const Dashboard = ({user}) => {
   const navigate = useNavigate()
   const [foodProperties, setFoodProperties] = useState(new FoodStatsClass(0,0,0,0,0,0,0))
   const [inventory, setInventory] = useState([])
@@ -23,6 +27,9 @@ const Dashboard = ({user, logoutFunction}) => {
   const [search, setSearch] = useState("")
   const [filteredFoods, setFilteredFoods] = useState(null)
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [loadingAI, setLoadingAI] = useState(false)
+  const [errorCount, setErrorCount] = useState(1)
+  const [plateError, setPlateError] = useState("")
 
   useEffect(() => {
     GetInventory()
@@ -135,7 +142,7 @@ const Dashboard = ({user, logoutFunction}) => {
   }
 
   const GetInventory = async () => {
-    await axios.get(`http://localhost:3000/api/getinventory/${user._id}`)
+    await axios.get(`http://localhost:3000/api/getinventory/${user._id}`, {withCredentials: true})
     .then((res) => {
       setInventory([])
 
@@ -153,27 +160,83 @@ const Dashboard = ({user, logoutFunction}) => {
   }
 
   const createMeal = async () => {
-    const cleanData = []
+    const cleanData = [];
+    let attempts = 0;
+  
+    if (plateItems.length === 0) {
+      setPlateError("Plate cannot be empty");
+      return;
+    }
+  
+    if (plateItems.length < 2) {
+      setPlateError("The plate must contain at least two different food items");
+      return;
+    }
+  
+    plateItems.forEach(item => {
+      cleanData.push({
+        Name: item.Name,
+        Amount: item.Amount * parseInt(item.Count) || 0,
+        Measurement: item.Measurement,
+      });
+    });
+  
+    const modifiedCleanData = {
+      prompt: [...cleanData],
+      Macros: {
+        Calories: foodProperties.Calories,
+        Protein: foodProperties.Protein,
+        Fat: foodProperties.Fat,
+        Sugar: foodProperties.Sugar,
+        Carbs: foodProperties.Carbs,
+        GI: foodProperties.GI,
+        GL: foodProperties.GL,
+      },
+    };
+  
+    setLoadingAI(true);
+  
+    while (attempts < maxFetches) {
+      try {
+        console.log("attempt", attempts + 1);
+        setErrorCount(attempts)
+  
+        const res = await axios.post(
+          "http://localhost:3000/api/getmeal",
+          { user, data: modifiedCleanData },
+          { timeout: 240000, withCredentials: true }
+        );
 
-    plateItems.forEach((item) => {
-      cleanData.push(
-        {
-          Name: item.Name,
-          Amount: item.Amount * parseInt(item.Count) || 0,
-          Measurement: item.Measurement
+        console.log(res)
+        setErrorCount(1)
+
+        break
+  
+        if (!user?._id || !res?.data?._id) {
+          throw new Error("Meal data missing");
         }
-      )
-    })
-
-    await axios.post(`http://localhost:3000/api/getmeal`, {user: user, data: cleanData})
-    .then((res) => {
-      plateItems([])
-      //navigate() to meal history
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-  }
+  
+        navigate(`/profile/${user._id}/mealhistory/${res.data._id}`);
+        addPlateItem([]);
+        addVisiblePlateItem([]);
+  
+        break; 
+      } catch (error) {
+        attempts++;
+        console.log("failed attempt", attempts);
+  
+        if (attempts >= maxFetches) {
+          console.error("All attempts failed");
+          setErrorCount(1)
+          break;
+        }
+  
+        await new Promise(r => setTimeout(r, 1000));
+      }
+    }
+  
+    setLoadingAI(false);
+  };  
 
   const removePlateItem = (item, index) => {
     const foundItem = inventory.find(inventoryItem => inventoryItem._id == item._id)
@@ -201,16 +264,10 @@ const Dashboard = ({user, logoutFunction}) => {
 
   return (
     <div className='bg-[#292838] h-screen flex flex-col justify-between'>
-      
-      <div>
-        <h2 className='text-white text-center text-5xl'>Welcome back, {user?.username}</h2>
-      </div>
 
-      <div className='bg-white h-20'>
+      <div className='flex flex-row justify-between'></div>
 
-      </div>
-
-      <div className='flex justify-around items-center flex-row w-screen h-6/12'>
+      <div className='flex justify-around items-center flex-row w-screen h-8/12'>
         <div className='bg-[#15141b] w-[25%] h-full rounded-xl p-3 pb-10 drop-shadow-2xl '>
 
           <p className='text-white text-3xl text-center mb-3'>Goals</p>
@@ -225,7 +282,6 @@ const Dashboard = ({user, logoutFunction}) => {
         </div>
 
         <div className='w-[28%] h-full flex flex-col justify-around'>
-          
           <div className='w-full h-15 text-center'> 
             <input className='bg-indigo-800 transition duration-1000 hover:drop-shadow-[0_0_10px_rgba(50,20,200,1)] text-white w-3/4 h-full rounded-xl drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]' type="button" value="✨Suggest a meal using AI✨" />
           </div>
@@ -258,7 +314,7 @@ const Dashboard = ({user, logoutFunction}) => {
         <div className='bg-[#15141b] w-[25%] h-full p-3 flex flex-col justify-center items-center rounded-xl gap-3 drop-shadow-2xl'>
           <p className='text-white text-3xl text-center'>Foods on plate</p>
 
-          <input className='bg-white w-full h-10  text-center text-xl' type="text" placeholder='Search' name="" id="" onChange={
+          <input className='bg-[#222238] text-white accent-white rounded-xl w-full h-10  text-center text-xl' type="text" placeholder='Search' name="" id="" onChange={
             (e) => {
               setSearch(e.target.value)
             }
@@ -292,10 +348,19 @@ const Dashboard = ({user, logoutFunction}) => {
       </div>
 
       <DragLayer dragging = {dragging}/>
+
       {showConfirmation && <ClearConfirmation onCancel={() => setShowConfirmation(false)} onClear={() => {
         setShowConfirmation(false)
         window.location.reload()
       }}/>}
+
+      {loadingAI && <CreatingMeal errorCount={errorCount}/>}
+
+      {plateError && <PlateError plateError={plateError} onOk={
+        () => {
+          setPlateError("")
+        }
+      }/>} 
 
     </div>
   )
