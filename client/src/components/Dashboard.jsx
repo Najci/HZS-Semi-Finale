@@ -31,8 +31,11 @@ const Dashboard = ({user}) => {
   const [errorCount, setErrorCount] = useState(1)
   const [plateError, setPlateError] = useState("")
 
+  const [goals, setGoals] = useState() 
+
   useEffect(() => {
     GetInventory()
+    getGoals()
   },[])
 
   useEffect(() => {
@@ -59,8 +62,6 @@ const Dashboard = ({user}) => {
         acc.Fat += item.Fat * count;
         acc.Sugar += item.Sugar * count;
         acc.Carbs += item.Carbs * count;
-        acc.GI += item.GI * count;
-        acc.GL += item.GL * count;
 
         return acc;
       },
@@ -159,6 +160,17 @@ const Dashboard = ({user}) => {
     })
   }
 
+  const getGoals = async () => {
+    axios.get(`http://localhost:3000/api/getgoals/${user._id}`)
+    .then((res) => {
+      console.log(res.data)
+      setGoals(res.data)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+
   const createMeal = async () => {
     const cleanData = [];
     let attempts = 0;
@@ -189,8 +201,6 @@ const Dashboard = ({user}) => {
         Fat: foodProperties.Fat,
         Sugar: foodProperties.Sugar,
         Carbs: foodProperties.Carbs,
-        GI: foodProperties.GI,
-        GL: foodProperties.GL,
       },
     };
   
@@ -199,7 +209,7 @@ const Dashboard = ({user}) => {
     while (attempts < maxFetches) {
       try {
         console.log("attempt", attempts + 1);
-        setErrorCount(attempts)
+        setErrorCount(attempts + 1)
   
         const res = await axios.post(
           "http://localhost:3000/api/getmeal",
@@ -210,17 +220,10 @@ const Dashboard = ({user}) => {
         console.log(res)
         setErrorCount(1)
 
+        navigate(`/profile/${user._id}/mealhistory/${res.data.id}`);
+
         break
-  
-        if (!user?._id || !res?.data?._id) {
-          throw new Error("Meal data missing");
-        }
-  
-        navigate(`/profile/${user._id}/mealhistory/${res.data._id}`);
-        addPlateItem([]);
-        addVisiblePlateItem([]);
-  
-        break; 
+
       } catch (error) {
         attempts++;
         console.log("failed attempt", attempts);
@@ -275,7 +278,7 @@ const Dashboard = ({user}) => {
           <div className='w-full h-[90%] text-white flex flex-col justify-start p-3 gap-3 overflow-scroll no-scrollbar'>
 
             {FoodStatsClass.returnStats().map((item, index) => (
-              <FoodStats key={index} statName={item} plateStatData={foodProperties}/>
+              <FoodStats key={index} goals={goals} statName={item} plateStatData={foodProperties}/>
             ))}
 
           </div>

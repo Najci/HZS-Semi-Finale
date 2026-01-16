@@ -12,7 +12,7 @@ const Login = ({ CreateCookie, user }) => {
 
   useEffect(() => {
     if (user){
-      navigate(`/dashboard/${user._id}`)
+      navigate(`/home/${user._id}`)
       console.log('workin')
     }
   }, [userd])
@@ -28,7 +28,7 @@ const Login = ({ CreateCookie, user }) => {
     .then(function (response) {
       CreateCookie(response.data)
       setUser(response.data)
-      navigate(`/dashboard/${user?._id}`)
+      navigate(`/home/${user?._id}`)
 
     })
     .catch(function (error) {
@@ -37,13 +37,13 @@ const Login = ({ CreateCookie, user }) => {
   }
 
   return (
-    <form onSubmit={submit} id='LogIn' className="bg-[#f8f5f2] content-stretch flex flex-col items-start relative size-full h-screen w-screen overflow-hidden">
+    <form onSubmit={submit} id='LogIn' className="bg-[#292838] content-stretch flex flex-col items-start relative size-full h-screen w-screen overflow-hidden">
 
       <div className="h-[934px] relative shrink-0 w-[1388.24px] mx-auto overflow-hidden">
         <div className="absolute inset-[-2.08%_-1.67%_-2.94%_-1.69%] overflow-hidden">
           <svg className="block size-full overflow-hidden" fill="none" preserveAspectRatio="none" viewBox="0 0 1436 982">
             <g filter="url(#filter0_d_8_1473)" id="Vector 1">
-              <path d={svgPaths.p1c7c8700} fill="var(--fill-0, #6D597A)" />
+              <path d={svgPaths.p1c7c8700} fill="var(--fill-0, #4338CA)" />
               <path d={svgPaths.p1c7c8700} stroke="var(--stroke-0, black)" />
             </g>
             <defs>
@@ -62,16 +62,16 @@ const Login = ({ CreateCookie, user }) => {
         </div>
       </div>
 
-      <div className="absolute backdrop-blur-[6.7px] backdrop-filter bg-gray-300 h-[463px] overflow-clip rounded-[40px] shadow-[0px_4px_17.1px_1px_rgba(0,0,0,0.25)] translate-x-[-50%] translate-y-[-50%] w-[695px]" style={{ top: "calc(50% + 51px)", left: "calc(50% - 1.5px)" }}>
-        <div className="absolute bg-[#f8f5f2] h-[59px] left-[126px] rounded-[40px] top-[61px] w-[442px]">
-          <input placeholder='Username' className='w-full h-full px-6 rounded-[40px] outline-none border-none' type="text" id="user" name='username'/>
+      <div className="bg-[#15141b] absolute backdrop-blur-[6.7px] backdrop-filter h-[463px] overflow-clip rounded-[40px] shadow-[0px_4px_17.1px_1px_rgba(0,0,0,0.25)] translate-x-[-50%] translate-y-[-50%] w-[695px]" style={{ top: "calc(50% + 51px)", left: "calc(50% - 1.5px)" }}>
+        <div className="absolute bg-[#1c1c29] h-[59px] left-[126px] rounded-[40px] top-[61px] w-[442px]">
+          <input placeholder='Username' className='placeholder-white w-full h-full px-6 rounded-[40px] outline-none border-none' type="text" id="user" name='username'/>
         </div>
 
-        <div className="absolute bg-[#f8f5f2] h-[59px] left-[126px] rounded-[40px] top-[163px] w-[442px]">
-          <input placeholder='Password' className='w-full h-full px-6 rounded-[40px] outline-none border-none' name="password" type='password' id="passLog"/>
+        <div className="absolute bg-[#1c1c29] h-[59px] left-[126px] rounded-[40px] top-[163px] w-[442px]">
+          <input placeholder='Password' className='placeholder-white w-full h-full px-6 rounded-[40px] outline-none border-none' name="password" type='password' id="passLog"/>
         </div>
 
-        <div className="absolute bg-[#3c6e91] bottom-[89px] h-[59px] left-1/2 rounded-[40px] translate-x-[-50%] w-[319px]">
+        <div className="absolute bg-[#4338CA] bottom-[89px] h-[59px] left-1/2 rounded-[40px] translate-x-[-50%] w-[319px]">
           <input className='w-full h-full px-6 rounded-[40px] outline-none border-none text-white'  id='Log' type="submit" value="Continue"  name='button'/>
         </div>
 
@@ -81,13 +81,13 @@ const Login = ({ CreateCookie, user }) => {
 
         <div className="absolute bottom-[41px] flex flex-col font-['Inter:Bold',_sans-serif] font-bold justify-center leading-[0] left-1/2 not-italic text-[20px] text-center text-nowrap text-[#2b2b2b] tracking-[-0.5px] translate-x-[-50%] translate-y-[50%]">
           <Link to={`/signup`} style={{textDecoration: 'none'}}>
-            <p className="leading-[1.1] whitespace-pre">Sign up</p>
+            <p className="text-white leading-[1.1] whitespace-pre">Sign up</p>
           </Link>
         </div>
 
       </div>
 
-      <div className="[text-shadow:rgba(0,0,0,0.25)_0px_4px_4px] absolute flex flex-col font-['Inter:Bold',_sans-serif] font-bold h-[62px] justify-center leading-[0] not-italic text-[56px] text-[#2b2b2b] top-[151px] tracking-[-1.4px] translate-y-[-50%] w-[600px]" style={{ left: "calc(50% - 302px)" }}>
+      <div className="[text-shadow:rgba(0,0,0,0.25)_0px_4px_4px] absolute flex flex-col font-['Inter:Bold',_sans-serif] font-bold h-[62px] justify-center leading-[0] not-italic text-[56px] text-[#fff] top-[151px] tracking-[-1.4px] translate-y-[-50%] w-[600px]" style={{ left: "calc(50% - 302px)" }}>
         <div className="leading-[1.1]">Continue Your Journey</div>
       </div>
 

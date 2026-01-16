@@ -13,6 +13,7 @@ import LandingPage from './components/LandingPage';
 import {profileRoutes} from './components/Profile/Profile';
 import Home from './components/Home';
 import Header from './components/Header';
+import Questionnaire from './components/QuestionnaireComponents/Questionnaire';
 
 const ProtectedRoute = ({ element, username}) => {
   const user = element.props.user
@@ -51,10 +52,10 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromChildren(
       <Route element={
-        <div className='h-screen flex flex-col overflow-hidden'>
+        <div className='h-screen flex flex-col'>
           <Header user={cookie.user} />
           <Main />
-{/*           <Footer user={cookie.user}/> */}
+          <Footer user={cookie.user}/>
         </div>
       }>
         {profileRoutes(cookie.user, handleLogout)}
@@ -65,6 +66,7 @@ function App() {
         <Route path={`home/${cookie.user?._id}`} element={<ProtectedRoute element={<Home user={cookie.user} />} />} />
         <Route path={`/dashboard/${cookie.user?._id}`} element={ <ProtectedRoute element={<Dashboard user={cookie.user}/>} />} />
         <Route path='/instructions' element={<Instructions user={cookie.user} />} />
+        <Route path={`/questionnaire/${cookie.user?._id}`} element={<ProtectedRoute element={<Questionnaire user={cookie.user} />} />} />
       </Route>
     )
   );

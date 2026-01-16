@@ -69,6 +69,22 @@ function createSession(data){
     return {username: data.username, email: data.email}
 }
 
+
+app.get(`/api/getgoals/:userId`, async (req, res) => {
+    res.status(200);
+})
+
+app.post(`/api/updategoals`, async (req, res) => {
+    const data = req.body.goals;
+    const userId = req.body.user._id;
+    await User.updateOne(
+    { _id: userId },
+    { $set: { goals: data } }
+    );
+    
+    res.status(200).send("Goals updated successfully");
+})
+
 app.get("/api/gethistory/:userId/meal/:mealId", async (req, res) => {
     const data = req.params
 
@@ -82,8 +98,6 @@ app.get("/api/gethistory/:userId/meal/:mealId", async (req, res) => {
         const foundMeal = foundMealHistory.meals.find(
             meal => meal._id.toString() === data.mealId
         );
-
-        const macroList = Object.values(foundMeal.recipe.Macro)
 
         if(!foundMeal){
             return res.status(404).send("Meal wasn't found for current user");
@@ -195,12 +209,10 @@ app.post("/api/getmeal", async (req, res) => {
             console.error("Error uploading image:", err);
         }
 
-        await mealHistory.findOneAndUpdate(
+        const updatedDoc = await mealHistory.findOneAndUpdate(
             { user: data.user._id },
             {
-              $setOnInsert: {
-                user: data.user._id
-              },
+              $setOnInsert: { user: data.user._id },
               $push: {
                 meals: {
                   $each: [{
@@ -214,18 +226,19 @@ app.post("/api/getmeal", async (req, res) => {
               }
             },
             { upsert: true, new: true }
-        );
+        );    
 
-        await fs.writeFile(
+        const newMeal = updatedDoc.meals[updatedDoc.meals.length - 1];
+        const newMealId = newMeal._id;
+
+        /* await fs.writeFile(
             "plate6.png",
             imageBuffer
-        );
+        ); */
 
         console.log("server success")
 
-        res.status(200).json({
-            success: true,
-        });
+        res.status(200).json({id : newMealId});
 
     } catch (error) {
         console.error(error);

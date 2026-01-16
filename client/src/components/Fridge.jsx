@@ -127,13 +127,11 @@ const Fridge = ({ user }) => {
             <p>Calories: {(selectedFood.Calories * cartCount) || 0}cal</p>
             <p>Protien: {(selectedFood.Protein * cartCount || 0).toFixed(1)}g</p>
             <p>Fat: {(selectedFood.Fat * cartCount || 0).toFixed(1)}g</p>
-            <p>Carbs: {(selectedFood.Carbs * cartCount || 0).toFixed(1)}g</p>
           </div>
 
           <div className='h-full w-4/9'>
+            <p>Carbs: {(selectedFood.Carbs * cartCount || 0).toFixed(1)}g</p>
             <p>Sugar: {(selectedFood.Sugar * cartCount || 0).toFixed(1)}g</p>
-            <p>GI: {(selectedFood.GI * cartCount || 0)}</p>
-            <p>GL: {(selectedFood.GL * cartCount || 0)}</p>
           </div>
         </div>
 

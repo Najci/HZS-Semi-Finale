@@ -8,21 +8,17 @@ class FoodStatsClass{
     Fat 
     Sugar
     Carbs
-    GI
-    GL
 
-    constructor(calories, protiens, fats, sugar, carbs, gi, gl){
+    constructor(calories, protiens, fats, sugar, carbs){
         this.Calories = calories || 0
         this.Protein = protiens || 0
         this.Fat = fats || 0
         this.Sugar = sugar || 0
         this.Carbs = carbs || 0
-        this.GI = gi || 0
-        this.GL = gl || 0
     }
 
     static returnStats(){
-        return ["Calories", "Protein", "Fat", "Sugar", "Carbs", "GI", "GL"]
+        return ["Calories", "Protein", "Fat", "Sugar", "Carbs"]
     }
 }
 
@@ -34,8 +30,8 @@ class FoodClass extends FoodStatsClass{
     Measurement
     Amount
 
-    constructor(ID, name, img, calories, proteins, fats, sugar, carbs, gi, gl, measurement, amount){
-        super(calories, proteins, fats, sugar, carbs, gi, gl);
+    constructor(ID, name, img, calories, proteins, fats, sugar, carbs, measurement, amount){
+        super(calories, proteins, fats, sugar, carbs);
 
         this._id = ID
         this.Name = name
@@ -79,8 +75,6 @@ class FoodClass extends FoodStatsClass{
             this.Fat,
             this.Sugar,
             this.Carbs,
-            this.GI,
-            this.GL,
             this.Measurement,
             this.Amount
         );
@@ -101,8 +95,6 @@ const buildFoodClass = (item) => {
         item.Fat,
         item.Sug,
         item.Carbs,
-        item.GI,
-        item.GL,
         item.Measurement,
         item.Amount
     )

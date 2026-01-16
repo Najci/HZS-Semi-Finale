@@ -1,0 +1,41 @@
+{
+    "questions": [
+      {
+        "id": 1,
+        "question": "What's your gender?",
+        "type": "singleChoice",
+        "options": ["Male", "Female"]
+      },
+      {
+        "id": 2,
+        "question": "What's your goal?",
+        "type": "singleChoice",
+        "options": [
+          "Lose weight",
+          "Gain weight",
+          "Stay the same weight"
+        ]
+      },
+      {
+        "id": 3,
+        "question": "What's your age, height, and weight?",
+        "type": "inputGroup",
+        "fields": [
+          { "name": "age", "type": "number" },
+          { "name": "height", "type": "number", "unit": "cm" },
+          { "name": "weight", "type": "number", "unit": "kg" }
+        ]
+      },
+      {
+        "id": 4,
+        "question": "Weekly activity/exercise:",
+        "type": "singleChoice",
+        "options": [
+          "None",
+          "Light (1–3 times)",
+          "Moderate (4–5 times)",
+          "Active (daily exercise)"
+        ]
+      }
+    ]
+}

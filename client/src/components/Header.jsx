@@ -20,7 +20,7 @@ const Header = ({user}) => {
                 <p className='text-white'>Dashboard</p>
             </div>
 
-            <div className='h-full flex justify-center items-center hover:cursor-pointer'> 
+            <div className='h-full flex justify-center items-center hover:cursor-pointer' onClick={() => {navigate(`/questionnaire/${user._id}`)}}> 
                 <p className='text-white'>Questioneer</p>
             </div>
 

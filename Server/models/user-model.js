@@ -15,7 +15,8 @@ const userSchema = new mongoose.Schema({
     },
     dateOfCreation:{
         type: mongoose.Schema.Types.Date
-    }
+    },
+    goals: { type: mongoose.Schema.Types.Mixed, default: {} }
 }
 )
 const User = mongoose.model('user', userSchema);

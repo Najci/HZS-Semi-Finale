@@ -14,7 +14,9 @@ const Home = ({user}) => {
             </div>
 
             <div className='w-full rise active flex flex-col justify-center items-center gap-1'>
-                <button className='bg-[#14141b] hover:cursor-pointer w-1/6 p-2 spinning-drop-shadow rounded-xl text-white text-center flex justify-center items-center mt-3'>
+                <button className='bg-[#14141b] hover:cursor-pointer w-1/6 p-2 spinning-drop-shadow rounded-xl text-white text-center flex justify-center items-center mt-3' onClick={
+                    () => {navigate(`/questionnaire/${user._id}`)}
+                }>
                     <p>Questioneer</p>
                 </button>
     

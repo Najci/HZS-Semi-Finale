@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
-
+import Logo from '../assets/images/foodplatelogo.png'
+import img1 from '../assets/images/li5.png'
+import img2 from '../assets/images/li6.png'
+import img3 from '../assets/images/li4.png'
 function Company1() {
   return (
     <div className="basis-0 content-stretch flex gap-[8px] grow items-center min-h-px min-w-px relative shrink-0" data-name="Company">
       <div className="h-[80px] relative shrink-0 w-[83px]" data-name="Logo">
-        <img alt="Logomark" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none size-full"  />
+        <img src={Logo} alt="Logomark" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none size-full"  />
       </div>
       <div className="basis-0 flex flex-col font-['Inter:Semi_Bold',_sans-serif] font-semibold grow justify-center leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-[24px] text-black tracking-[-0.48px]">
-        <p className="leading-[1.45]">Pluralia</p>
+        <p className="leading-[1.45] text-3xl text-[#ffffff]">Full Plate</p>
       </div>
     </div>
   );
@@ -17,7 +20,7 @@ function Company1() {
 function PrimaryButton() {
   return (
     <Link to={`/login`} style={{textDecoration: 'none'}}>
-      <div className="bg-[#3c6e91] box-border content-stretch flex gap-[8px] items-center justify-center px-[16px] py-[12px] relative rounded-[12px] shrink-0" data-name="Primary button">
+      <div className="bg-[#4338CA] box-border content-stretch flex gap-[8px] items-center justify-center px-[16px] py-[12px] relative rounded-[12px] shrink-0" data-name="Primary button">
         <div className="flex flex-col font-['Inter:Medium',_sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[16px] text-center text-nowrap text-white tracking-[-0.08px]">
           <p className="leading-[1.45] whitespace-pre">LOG IN</p>
         </div>
@@ -30,7 +33,7 @@ function Buttons() {
   return (
     <nav className="box-border content-center flex flex-wrap gap-[24px] items-center overflow-visible p-0 relative shrink-0" data-name="Buttons">
       <Link to={`/signup`} style={{textDecoration: 'none'}}>
-        <div className="flex flex-col font-['Inter:Medium',_sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[16px] text-black text-nowrap tracking-[-0.08px]">
+        <div className="flex flex-col font-['Inter:Medium',_sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[16px] text-white text-nowrap tracking-[-0.08px]">
           <p className="leading-[1.45] whitespace-pre">SIGN UP</p>
         </div>
       </Link>
@@ -56,11 +59,11 @@ function Text() {
 
   return (
     <div className="content-stretch flex flex-col gap-[32px] items-center leading-[0] relative shrink-0 text-center w-full" data-name="Text">
-      <div className="flex flex-col font-['Inter:Bold',_sans-serif] font-bold justify-center min-w-full not-italic relative shrink-0 text-[#2b2b2b] text-[64px] tracking-[-1.6px]" style={{ width: "min-content" }}>
-        <h1 className="block leading-[1.1]">Learn, Play, and Grow with Emotional Intelligence</h1>
+      <div className="flex flex-col font-['Inter:Bold',_sans-serif] font-bold justify-center min-w-full not-italic relative shrink-0 text-[#ffffff] text-[64px] tracking-[-1.6px]" style={{ width: "min-content" }}>
+        <h1 className="block leading-[1.1]">Track, Learn, and <i>Get Fit</i> with Artificial Intelligence</h1>
       </div>
-      <div className="flex flex-col font-['Inter:Italic',_sans-serif] font-normal italic justify-center relative shrink-0 text-[24px] text-[rgba(0,0,0,0.55)] tracking-[-0.12px] w-[729px]">
-        <p className="leading-[1.45]">A science-based platform that turns emotional learning into engaging, interactive progress - designed for professionals, educators, and lifelong learners.</p>
+      <div className="flex flex-col font-['Inter:Italic',_sans-serif] font-normal italic justify-center relative shrink-0 text-[24px] text-[#ffffff] tracking-[-0.12px] w-[729px]">
+        <p className="leading-[1.45]">Discover delicious meal ideas and stay on top of your health, with the help of Artificial Intelligence. From calories and macros to vitamins and minerals, you’ll know exactly what you’re eating.</p>
       </div>
     </div>
   );
@@ -80,7 +83,7 @@ function Hero() {
 
 function PrimaryButton1() {
   return (
-    <div className="bg-[#3c6e91] box-border content-stretch flex gap-[8px] items-center justify-center px-[16px] py-[12px] relative rounded-[12px] shrink-0" data-name="Primary button">
+    <div className="bg-[#4338CA] box-border content-stretch flex gap-[8px] items-center justify-center px-[16px] py-[12px] relative rounded-[12px] shrink-0" data-name="Primary button">
       <div className="flex flex-col font-['Inter:Medium',_sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[18px] text-center text-nowrap text-white tracking-[-0.09px]">
         <p className="leading-[1.45] whitespace-pre">Begin Your Journey</p>
       </div>
@@ -91,8 +94,8 @@ function PrimaryButton1() {
 function SecondaryButton() {
   return (
     <div className="box-border content-stretch flex gap-[8px] items-center justify-center px-[16px] py-[12px] relative rounded-[12px] shrink-0" data-name="Secondary button">
-      <div aria-hidden="true" className="absolute border-2 border-[rgba(0,0,0,0.15)] border-solid inset-0 pointer-events-none rounded-[12px]" />
-      <div className="flex flex-col font-['Inter:Medium',_sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#2b2b2b] text-[18px] text-nowrap tracking-[-0.09px]">
+      <div aria-hidden="true" className="absolute border-2 bg-[#171720] border-[rgba(0,0,0,0.15)] border-solid inset-0 pointer-events-none rounded-[12px]" />
+      <div className=" bg-flex  flex-col font-['Inter:Medium',_sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#ffffff] text-[18px] text-nowrap tracking-[-0.09px]">
         <p className="leading-[1.45] whitespace-pre">Instructions</p>
       </div>
     </div>
@@ -120,7 +123,7 @@ function Image() {
         <div className="box-border content-stretch flex flex-col gap-[57px] h-[716px] items-center justify-center px-[64px] py-0 relative w-full">
           <Buttons1 />
           <div className="h-[542px] relative rounded-[40px] shadow-[0px_4px_20.8px_7px_rgba(0,0,0,0.25)] shrink-0 w-full" data-name="LandingPageImage">
-            <img alt="Landing detail" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none rounded-[40px] size-full"  />
+            <img src={img2} alt="Landing detail" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none rounded-[40px] size-full"  />
           </div>
         </div>
       </div>
@@ -130,13 +133,14 @@ function Image() {
 
 function TextBlock1() {
   return (
+    
     <div className="basis-0 box-border content-stretch flex flex-col gap-[16px] grow items-start min-h-px min-w-[324px] pb-0 pt-[24px] px-0 relative shrink-0" data-name="Text block 1">
-      <div aria-hidden="true" className="absolute border-[1px_0px_0px] border-[rgba(0,0,0,0.15)] border-solid inset-0 pointer-events-none" />
-      <div className="font-['Inter:Bold',_sans-serif] font-bold leading-[0] not-italic relative shrink-0 text-[#2b2b2b] text-[24px] text-nowrap tracking-[-0.48px]">
-        <p className="leading-none whitespace-pre">Interactive Emotional Quests</p>
+      <div aria-hidden="true" className="textabsolute border-[1px_0px_0px] border-[rgba(0,0,0,0.15)] border-solid inset-0 pointer-events-none" />
+      <div className="text-gray-400 font-['Inter:Bold',_sans-serif] font-bold leading-[0] not-italic relative shrink-0 text-[24px] text-nowrap tracking-[-0.48px]">
+        <p className="leading-none whitespace-pre">Unique Recipe Generator</p>
       </div>
       <div className="flex flex-col font-['Inter:Medium',_sans-serif] font-medium justify-center leading-[0] min-w-full not-italic relative shrink-0 text-[16px] text-[rgba(0,0,0,0.55)] tracking-[-0.08px]" style={{ width: "min-content" }}>
-        <p className="leading-[1.45]">Engage in guided scenarios where the system generates prompts and asks you thought-provoking questions. Your responses influence your happiness level, resilience, and emotional balance, making learning both immersive and personal.</p>
+        <p className="leading-[1.45] text-white">Discover new meals in seconds. Our AI turns your ingredients, cravings, and dietary needs into delicious, unique recipes you’ll love. Cooking just got exciting.</p>
       </div>
     </div>
   );
@@ -147,10 +151,10 @@ function TextBlock2() {
     <div className="basis-0 box-border content-stretch flex flex-col gap-[16px] grow items-start min-h-px min-w-[324px] pb-0 pt-[24px] px-0 relative shrink-0" data-name="Text block 2">
       <div aria-hidden="true" className="absolute border-[1px_0px_0px] border-[rgba(0,0,0,0.15)] border-solid inset-0 pointer-events-none" />
       <div className="font-['Inter:Bold',_sans-serif] font-bold leading-[0] not-italic relative shrink-0 text-[#2b2b2b] text-[24px] text-nowrap tracking-[-0.48px]">
-        <p className="leading-none whitespace-pre">Real-Time Emotional Stats</p>
+        <p className="leading-none whitespace-pre text-gray-400">Nutrition Tracker</p>
       </div>
-      <div className="flex flex-col font-['Inter:Medium',_sans-serif] font-medium justify-center leading-[0] min-w-full not-italic relative shrink-0 text-[16px] text-[rgba(0,0,0,0.55)] tracking-[-0.08px]" style={{ width: "min-content" }}>
-        <p className="leading-[1.45]">Track your growth with a dynamic dashboard. See how your decisions impact your happiness, stress, and self-awareness, turning emotional learning into measurable progress.</p>
+      <div className="text-white flex flex-col font-['Inter:Medium',_sans-serif] font-medium justify-center leading-[0] min-w-full not-italic relative shrink-0 text-[16px] text-[rgba(0,0,0,0.55)] tracking-[-0.08px]" style={{ width: "min-content" }}>
+        <p className="leading-[1.45]">Track your calorie and macronutrient intake with our intuitive nutrition tracker. It helps you stay consistent by logging meals, monitoring calories, and understanding what your body needs to thrive.</p>
       </div>
     </div>
   );
@@ -161,10 +165,10 @@ function TextBlock3() {
     <div className="basis-0 box-border content-stretch flex flex-col gap-[16px] grow items-start min-h-px min-w-[324px] pb-0 pt-[24px] px-0 relative shrink-0" data-name="Text block 3">
       <div aria-hidden="true" className="absolute border-[1px_0px_0px] border-[rgba(0,0,0,0.15)] border-solid inset-0 pointer-events-none" />
       <div className="font-['Inter:Bold',_sans-serif] font-bold leading-[0] not-italic relative shrink-0 text-[#2b2b2b] text-[24px] text-nowrap tracking-[-0.48px]">
-        <p className="leading-none whitespace-pre">Smart Knowledge Highlights</p>
+        <p className="leading-none whitespace-pre text-gray-400">Questionnaire</p>
       </div>
-      <div className="flex flex-col font-['Inter:Medium',_sans-serif] font-medium justify-center leading-[0] min-w-full not-italic relative shrink-0 text-[16px] text-[rgba(0,0,0,0.55)] tracking-[-0.08px]" style={{ width: "min-content" }}>
-        <p className="leading-[1.45]">Confused by a concept? Key terms are automatically highlighted in context, with clear explanations shown on the side - so you never miss an opportunity to learn.</p>
+      <div className="text-white flex flex-col font-['Inter:Medium',_sans-serif] font-medium justify-center leading-[0] min-w-full not-italic relative shrink-0 text-[16px] tracking-[-0.08px]" style={{ width: "min-content" }}>
+        <p className="leading-[1.45]">Answer a quick questionnaire about your goals, current habits, and target weight—so we can tailor your nutrition plan to you.</p>
       </div>
     </div>
   );
@@ -174,7 +178,7 @@ function TextBlock() {
   return (
     <div className="rise relative shrink-0 w-full" data-name="Text block">
       <div className="relative size-full">
-        <div className="box-border content-stretch flex gap-[48px] items-start px-[42px] py-0 relative w-full">
+        <div className=" box-border content-stretch flex gap-[48px] items-start px-[42px] py-0 relative w-full">
           <TextBlock1 />
           <TextBlock2 />
           <TextBlock3 />
@@ -187,7 +191,7 @@ function TextBlock() {
 function Features() {
   return (
     <section className="rise bg-[rgba(0,0,0,0.02)] box-border content-stretch flex flex-col gap-[48px] h-[369px] items-start overflow-clip px-0 py-[19px] relative shrink-0 w-[1280px]" data-name="Features">
-      <div className="flex flex-col font-['Inter:Bold',_sans-serif] font-bold h-[75px] justify-center leading-[0] not-italic relative shrink-0 text-[#2b2b2b] text-[64px] text-center tracking-[-0.32px] w-full">
+      <div className="flex flex-col font-['Inter:Bold',_sans-serif] font-bold h-[75px] justify-center leading-[0] not-italic relative shrink-0 text-[#ffffff] text-[64px] text-center tracking-[-0.32px] w-full">
         <p className="leading-[1.45]">Features</p>
       </div>
       <TextBlock />
@@ -199,10 +203,10 @@ function Text1() {
   return (
     <div className="content-stretch flex flex-col gap-[24px] items-start leading-[0] not-italic relative shrink-0 w-full" data-name="Text">
       <div className="flex flex-col font-['Inter:Bold',_sans-serif] font-bold justify-center relative shrink-0 text-[#2b2b2b] text-[36px] tracking-[-0.72px] w-full">
-        <h2 className="block leading-[1.2]">Unlock Emotional Intelligence, Elevate Your Life</h2>
+        <h2 className="block leading-[1.2]">Unleash Your Physical Potential, Elevate Your Life</h2>
       </div>
       <div className="flex flex-col font-['Inter:Medium',_sans-serif] font-medium justify-center relative shrink-0 text-[18px] text-[rgba(0,0,0,0.55)] tracking-[-0.09px] w-full">
-        <p className="leading-[1.45]">Master the skills that matter most - resilience, empathy, and self-awareness. Our science-based, gamified platform transforms emotional learning into daily growth.</p>
+        <p className="leading-[1.45]">Master what matters the most: strength, endurance, and consistency. Our science-backed, wellness platform turns fitness into daily progress.</p>
       </div>
     </div>
   );
@@ -210,9 +214,9 @@ function Text1() {
 
 function Button() {
   return (
-    <div className="bg-[#3c6e91] box-border content-stretch flex gap-[8px] items-center justify-center px-[16px] py-[12px] relative rounded-[12px] shrink-0" data-name="Button">
+    <div className="bg-[#4338CA] box-border content-stretch flex gap-[8px] items-center justify-center px-[16px] py-[12px] relative rounded-[12px] shrink-0" data-name="Button">
       <div className="flex flex-col font-['Inter:Medium',_sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[18px] text-center text-nowrap text-white tracking-[-0.09px]">
-        <p className="leading-[1.45] whitespace-pre">SIGN UP</p>
+        <p className="leading-[1.45] whitespace-pre">Sign Up</p>
       </div>
     </div>
   );
@@ -232,7 +236,7 @@ function Image1() {
     <div className="basis-0 content-stretch flex flex-col gap-[8px] grow h-[432px] items-start min-h-px min-w-px relative shrink-0" data-name="Image">
       <div className="basis-0 grow min-h-px min-w-px relative rounded-[16px] shrink-0 w-full" data-name="Image">
         <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-[16px]">
-          <img alt="Product detail" className="absolute h-full left-[7.81%] max-w-none top-0 w-[84.37%]" />
+          <img src={img1} alt="Product detail" className="absolute h-full left-[7.81%] max-w-none top-0 w-[84.37%]" />
         </div>
       </div>
     </div>
@@ -252,7 +256,7 @@ function Image2() {
   return (
     <div className="basis-0 content-stretch flex flex-col gap-[8px] grow h-[432px] items-start min-h-px min-w-px relative shrink-0" data-name="Image">
       <div className="basis-0 grow min-h-px min-w-px relative rounded-[16px] shrink-0 w-full" data-name="Image">
-        <img alt="Product detail" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none rounded-[16px] size-full" />
+        <img src={img3} alt="Product detail" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none rounded-[16px] size-full" />
       </div>
     </div>
   );
@@ -262,10 +266,10 @@ function Text2() {
   return (
     <div className="content-stretch flex flex-col gap-[24px] items-start leading-[0] not-italic relative shrink-0 w-full" data-name="Text">
       <div className="flex flex-col font-['Inter:Bold',_sans-serif] font-bold justify-center relative shrink-0 text-[#2b2b2b] text-[36px] tracking-[-0.72px] w-full">
-        <h2 className="block leading-[1.2]">Level Up Your Emotional Skills</h2>
+        <h2 className="block leading-[1.2]">Become the version of yourself you’ve always wanted to be</h2>
       </div>
       <div className="flex flex-col font-['Inter:Medium',_sans-serif] font-medium justify-center relative shrink-0 text-[18px] text-[rgba(0,0,0,0.55)] tracking-[-0.09px] w-full">
-        <p className="leading-[1.45]">Turn emotional education into an interactive experience. Track progress, earn milestones, and build lasting habits with tools grounded in psychology.</p>
+        <p className="leading-[1.45]">Turn fitness education into an interactive experience. Set goals, track your progress, and build healthier habits with guidance that adapts to you.</p>
       </div>
     </div>
   );
@@ -273,7 +277,7 @@ function Text2() {
 
 function Button1() {
   return (
-    <div className="bg-[#3c6e91] box-border content-stretch flex gap-[8px] items-center justify-center px-[16px] py-[12px] relative rounded-[12px] shrink-0" data-name="Button">
+    <div className="bg-[#4338CA] box-border content-stretch flex gap-[8px] items-center justify-center px-[16px] py-[12px] relative rounded-[12px] shrink-0" data-name="Button">
       <div className="flex flex-col font-['Inter:Medium',_sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[18px] text-center text-nowrap text-white tracking-[-0.09px]">
         <p className="leading-[1.45] whitespace-pre">Begin Learning</p>
       </div>
@@ -381,7 +385,7 @@ function TextRow() {
 function Image3() {
   return (
     <div className="relative rounded-[8px] shrink-0 size-[55px]" data-name="Image">
-      <img alt="Logomark" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none rounded-[8px] size-full"  />
+      <img alt="Logomark" src={Logo} className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none rounded-[8px] size-full"  />
     </div>
   );
 }
@@ -391,7 +395,7 @@ function Company2() {
     <div className="content-stretch flex gap-[8px] items-center relative shrink-0" data-name="Company">
       <Image3 />
       <div className="flex flex-col font-['Inter:Semi_Bold',_sans-serif] font-semibold justify-center leading-[0] not-italic relative shrink-0 text-[20px] text-black text-center text-nowrap tracking-[-0.4px]">
-        <p className="leading-[1.45] whitespace-pre">Pluralia</p>
+        <p className="leading-[1.45] whitespace-pre">Full Plate</p>
       </div>
     </div>
   );
@@ -415,7 +419,7 @@ function Nav() {
 
 function Text3() {
   return (
-    <div className="content-stretch flex gap-[32px] items-center justify-center relative shrink-0" data-name="Text">
+    <div className="content-stretch flex gap-[32px] text-white items-center justify-center relative shrink-0" data-name="Text">
       <Company2 />
       <Nav />
     </div>
@@ -485,7 +489,7 @@ function SocialLinks() {
 
 function Footer() {
   return (
-    <footer className="relative shrink-0 w-full" data-name="Footer">
+    <footer className="relative shrink-0 w-full mt-[100px]" data-name="Footer">
       <div className="flex flex-row items-center relative size-full">
         <div className="box-border content-stretch flex items-center justify-between px-[64px] py-[21px] relative w-full">
           <Text3 />
@@ -502,10 +506,11 @@ function Container() {
       <Header1 />
       <Hero />
       <Image />
+        
       <Features />
       <Feature />
-      <TextRow />
       <Footer />
+
     </main>
   );
 }
@@ -542,7 +547,7 @@ const LandingPage = ({user}) => {
   }, []);
 
   return (
-    <div className="bg-[#f8f5f2] content-stretch flex flex-col items-start relative size-full" data-name="Desktop">
+    <div className="bg-[#292838]" data-name="Desktop">
           <Container />
     </div>
   )
